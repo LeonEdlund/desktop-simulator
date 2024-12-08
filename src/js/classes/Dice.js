@@ -17,7 +17,6 @@ Dice.prototype.generateDice = function () {
   }
 
   diceLi.classList.add(sides[this.amount]);
-  // diceLi.addEventListener("click", this.roll.bind(this));
 
   this.element = diceLi;
   return diceLi;
@@ -27,13 +26,3 @@ Dice.prototype.generateDice = function () {
 Dice.prototype.delete = function () {
   this.element.remove();
 }
-
-// Dice.prototype.appendTo = function (parent) {
-//   parent.appendChild(this.element);
-// }
-
-// Dice.prototype.roll = function () {
-//   console.log("roll");
-//   this.amount = Math.floor(Math.random() * 6) + 1;
-//   this.generateDice();
-// }

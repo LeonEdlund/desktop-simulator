@@ -9,28 +9,30 @@ function Window() {
   this.isDragging = false;
   this._offsetX;
   this._offsetY;
-  this._styleConfig = {
-    transparent: 0.5,
-    nonTransparent: 1,
-    zIndex: 1,
-  }
+}
+
+// static variables
+Window.zIndex = 1;
+Window.styleConfig = {
+  transparent: 0.5,
+  nonTransparent: 1,
 }
 
 // creates the structure of the dice window
 Window.prototype.createWindow = function (windowClass, menuClass) {
   var windowWrapper = document.createElement("div");
-  windowWrapper.classList.add(windowClass);
-
   var menuWrapper = document.createElement("div");
-  menuWrapper.classList.add(menuClass);
-  this._menuBar = menuWrapper;
-
   var close = document.createElement("div");
+
+  windowWrapper.classList.add(windowClass);
+  menuWrapper.classList.add(menuClass);
   close.classList.add("close");
-  this._closeBtn = close;
 
   menuWrapper.appendChild(close);
   windowWrapper.appendChild(menuWrapper);
+
+  this._menuBar = menuWrapper;
+  this._closeBtn = close;
 
   this._addListeners();
   this.element = windowWrapper;
@@ -54,13 +56,13 @@ Window.prototype._addListeners = function () {
 
 Window.prototype._dragStart = function (event) {
   this.isDragging = true;
-  this._styleConfig.zIndex++;
+  Window.zIndex++;
 
   this.offsetX = event.clientX - this.element.offsetLeft;
   this.offsetY = event.clientY - this.element.offsetTop;
 
-  this.element.style.opacity = this._styleConfig.transparent;
-  this.element.style.zIndex = this._styleConfig.zIndex;
+  this.element.style.opacity = Window.styleConfig.transparent;
+  this.element.style.zIndex = Window.zIndex;
 
   document.addEventListener("mousemove", this._mouseMove.bind(this));
   document.addEventListener("mouseup", this._mouseUp.bind(this));
@@ -82,23 +84,9 @@ Window.prototype._mouseMove = function (event) {
 Window.prototype._mouseUp = function (event) {
   if (this.isDragging) this.isDragging = false;
 
-  this.element.style.opacity = this._styleConfig.nonTransparent;
-  this.element.style.zIndex = this._styleConfig.defaultZIndex;
+  this.element.style.opacity = Window.styleConfig.nonTransparent;
+  this.element.style.zIndex = Window.styleConfig.defaultZIndex;
 
   document.removeEventListener("mousemove", this._mouseMove.bind(this));
   document.removeEventListener("mouseup", this._mouseUp.bind(this));
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-

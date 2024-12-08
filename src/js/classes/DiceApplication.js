@@ -11,10 +11,15 @@ function DiceApplication(maxDice) {
 
   this.createWindow("dice-window-wrapper", "dice-menubar-wrapper");
   this._addToolbar();
+  this._addToolbarListeners();
 }
 
+// Extends Window
 DiceApplication.prototype = Object.create(Window.prototype);
 DiceApplication.prototype.constructor = DiceApplication;
+
+// Static variables
+DiceApplication.audio = new Audio("/src/wav/add.wav");
 
 DiceApplication.prototype._addToolbar = function () {
   var toolbar = document.createElement("div");
@@ -39,15 +44,13 @@ DiceApplication.prototype._addToolbar = function () {
   toolbarUl.appendChild(counterWrapper);
   counterWrapper.appendChild(this._counter.getCounter());
   diceContainer.appendChild(diceUl);
+  this.element.appendChild(toolbar);
+  this.element.appendChild(diceContainer);
 
   this._addBtn = add;
   this._removeBtn = remove;
   this._rollBtn = roll;
   this._diceContainer = diceContainer;
-  this._addToolbarListeners();
-
-  this.element.appendChild(toolbar);
-  this.element.appendChild(diceContainer);
 }
 
 DiceApplication.prototype._addToolbarListeners = function () {
@@ -58,39 +61,40 @@ DiceApplication.prototype._addToolbarListeners = function () {
 
 DiceApplication.prototype._insertDice = function () {
   if (this._allDice.length >= this._maxDice) return;
-
   var dice = new Dice();
   this._allDice.push(dice);
 
   this._diceContainer.appendChild(dice.generateDice());
   this._countScore();
+  DiceApplication.audio.play();
 }
 
 DiceApplication.prototype._removeDice = function () {
   if (this._allDice.length <= 0) return;
-
   var removedDice = this._allDice.pop();
   removedDice.delete();
   this._countScore();
+  DiceApplication.audio.play();
 }
 
 DiceApplication.prototype._rollAllDice = function () {
   if (this._allDice.length <= 0) return;
-
   var self = this;
   var nrOfDice = this._allDice.length;
   this._allDice = [];
-  self._diceContainer.innerHTML = "";
 
+  DiceApplication.audio.play();
+  self._diceContainer.innerHTML = "";
   for (let i = 0; i < nrOfDice; i++) {
     self._insertDice();
   }
+
 }
 
 DiceApplication.prototype._countScore = function () {
-  this._count = 0;
+  var score = 0;
   this._allDice.forEach(dice => {
-    this._count += dice.amount;
+    score += dice.amount;
   });
-  this._counter.updateCounter(this._count);
+  this._counter.updateCounter(score);
 }
