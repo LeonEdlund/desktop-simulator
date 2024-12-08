@@ -6,9 +6,9 @@
 .clock-window-wrapper {
 	width: 144px;
 	height: 63px;
-	position: relative;
+	position: absolute;
 	left: 0px;
-	top: 0px;
+	top: 22px;
 	background: url(../img/clock-bg.png) no-repeat;
 }
 

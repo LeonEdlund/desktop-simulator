@@ -5,9 +5,8 @@
 
 body {
 	background-image: url('../img/body-bg.png');
+	overflow: hidden;
 }
-
-#page-wrapper {}
 
 #page-menu-wrapper {
 	width: 100%;
@@ -36,5 +35,3 @@ body {
 	height: 16px;
 	background-image: url(../img/icon-clock.png);
 }
-
-#page-content-wrapper {}

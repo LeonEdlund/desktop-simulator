@@ -6,9 +6,9 @@
 .dice-window-wrapper {
 	width: 342px;
 	height: 182px;
-	top: 0px;
+	top: 22px;
 	left: 0px;
-	position: relative;
+	position: absolute;
 	background: url(../img/dice-bg.png) no-repeat;
 }
 
