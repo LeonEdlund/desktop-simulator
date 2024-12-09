@@ -33,7 +33,6 @@ Counter.prototype.updateCounter = function (score) {
 Counter.prototype._getNumberClass = function (number) {
   if (number > 9) {
     throw ("number needs to be between 0 - 9");
-    return;
   }
 
   var classNames = {
