@@ -1,5 +1,5 @@
 function main() {
-  var newDoc = new Document();
+  var app = App.getInstance();
 }
 
 window.addEventListener("load", main);

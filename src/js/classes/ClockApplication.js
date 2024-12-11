@@ -1,10 +1,8 @@
+
+
 function ClockApplication() {
   Window.call(this);
-  this.currentTime = {
-    hour: "00",
-    minutes: "00",
-    seconds: "00",
-  }
+  this.TimeManager = TimeManager.getInstance();
 
   this.createWindow("clock-window-wrapper", "clock-menubar-wrapper");
   this._clockContainer = document.createElement("div");
@@ -19,30 +17,17 @@ function ClockApplication() {
   this._clockContainer.appendChild(this._secondsDigits);
   this.element.appendChild(this._clockContainer);
 
-  this.updateClock();
-  setInterval(this.updateClock.bind(this), 1000);
+  this.TimeManager.subscribe(this.renderClock.bind(this));
 }
 
 ClockApplication.prototype = Object.create(Window.prototype);
 ClockApplication.prototype.constructor = ClockApplication;
 
-ClockApplication.prototype.updateClock = function () {
-  this.updateTime();
-  this.renderClock();
-}
-ClockApplication.prototype.updateTime = function () {
-  var now = new Date();
-  this.currentTime = {
-    hour: now.getHours().toString().padStart(2, "0"),
-    minutes: now.getMinutes().toString().padStart(2, "0"),
-    seconds: now.getSeconds().toString().padStart(2, "0"),
-  }
-}
-
 ClockApplication.prototype.renderClock = function () {
-  var hour = this.currentTime.hour;
-  var minutes = this.currentTime.minutes;
-  var seconds = this.currentTime.seconds;
+  var TimeManager = this.TimeManager.timeAsStrings;
+  var hour = TimeManager.hour;
+  var minutes = TimeManager.minutes;
+  var seconds = TimeManager.seconds;
 
   this._updateDigits(this._hourDigits, hour[0], hour[1]);
   this._updateDigits(this._minutesDigits, minutes[0], minutes[1]);
