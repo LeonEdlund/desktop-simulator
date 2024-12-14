@@ -1,5 +1,3 @@
-
-
 function ClockApplication() {
   Window.call(this);
   this.TimeManager = TimeManager.getInstance();

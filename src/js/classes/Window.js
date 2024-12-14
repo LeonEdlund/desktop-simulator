@@ -2,8 +2,8 @@ function Window() {
   if (this.constructor === Window) {
     throw ("Button is an abstract class.");
   }
-  this.element;
 
+  this.element;
   this._closeBtn;
   this._menuBar;
   this.isDragging = false;

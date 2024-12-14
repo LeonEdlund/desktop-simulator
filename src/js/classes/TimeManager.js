@@ -1,3 +1,4 @@
+// singleton (Can only have one instance and only exposes the instance and nothing else);
 var TimeManager = (function () {
   function TimeManager() {
     this.subscribers = []; // array of callback functions
@@ -18,10 +19,10 @@ var TimeManager = (function () {
       minutes: now.getMinutes().toString().padStart(2, "0"),
       seconds: now.getSeconds().toString().padStart(2, "0"),
     }
-    this.renderSubscribers();
+    this._renderSubscribers();
   }
 
-  TimeManager.prototype.renderSubscribers = function () {
+  TimeManager.prototype._renderSubscribers = function () {
     this.subscribers.forEach(callback => {
       callback();
     });
