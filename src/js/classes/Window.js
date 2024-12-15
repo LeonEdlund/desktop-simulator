@@ -5,8 +5,6 @@ function Window() {
 
   this.element;
   this.dragHandler;
-  this._closeBtn;
-  this._menuBar;
 }
 
 // creates the structure of the dice window
@@ -22,11 +20,14 @@ Window.prototype.createWindow = function (windowClass, menuClass) {
   menuWrapper.appendChild(close);
   windowWrapper.appendChild(menuWrapper);
 
-  this._menuBar = menuWrapper;
-  this._closeBtn = close;
-
   this.element = windowWrapper;
-  this._addListeners();
+  this._addListeners(close, menuWrapper);
+}
+
+//add eventlistener
+Window.prototype._addListeners = function (closeBtn, menubar) {
+  closeBtn.addEventListener("click", this.closeWindow.bind(this));
+  this.dragHandler = new DragAndDropHandler(this.element, menubar);
 }
 
 // adds the window to the structure
@@ -39,8 +40,3 @@ Window.prototype.closeWindow = function () {
   this.element.remove();
 }
 
-//add eventlistener
-Window.prototype._addListeners = function () {
-  this._closeBtn.addEventListener("click", this.closeWindow.bind(this));
-  this.dragHandler = new DragAndDropHandler(this.element, this._menuBar);
-}

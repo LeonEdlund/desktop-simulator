@@ -1,10 +1,14 @@
 function WindowFactory() { }
 
 WindowFactory.prototype.createWindow = function (type) {
+  var window;
+
   if (type === "clock") {
-    return new ClockApplication();
+    window = new ClockApplication();
   } else if (type === "dice") {
-    return new DiceApplication(40);
+    window = new DiceApplication(40, new Counter());
   }
+
+  return window;
 }
 

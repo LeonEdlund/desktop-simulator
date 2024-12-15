@@ -1,17 +1,13 @@
-function DiceApplication(maxDice) {
+function DiceApplication(maxDice, counter) {
   Window.call(this);
 
-  this._addBtn;
-  this._removeBtn;
-  this._rollBtn;
   this._diceContainer;
   this._allDice = [];
   this._maxDice = maxDice;
-  this._counter = new Counter();
+  this._counter = counter;
 
   this.createWindow("dice-window-wrapper", "dice-menubar-wrapper");
   this._addToolbar();
-  this._addToolbarListeners();
 }
 
 // Extends Window
@@ -47,16 +43,15 @@ DiceApplication.prototype._addToolbar = function () {
   this.element.appendChild(toolbar);
   this.element.appendChild(diceContainer);
 
-  this._addBtn = add;
-  this._removeBtn = remove;
-  this._rollBtn = roll;
   this._diceContainer = diceContainer;
+
+  this._addToolbarListeners(add, remove, roll);
 }
 
-DiceApplication.prototype._addToolbarListeners = function () {
-  this._addBtn.addEventListener("click", this._insertDice.bind(this));
-  this._removeBtn.addEventListener("click", this._removeDice.bind(this));
-  this._rollBtn.addEventListener("click", this._rollAllDice.bind(this));
+DiceApplication.prototype._addToolbarListeners = function (addBtn, removeBtn, rollBtn) {
+  addBtn.addEventListener("click", this._insertDice.bind(this));
+  removeBtn.addEventListener("click", this._removeDice.bind(this));
+  rollBtn.addEventListener("click", this._rollAllDice.bind(this));
 }
 
 DiceApplication.prototype._insertDice = function () {
@@ -79,22 +74,23 @@ DiceApplication.prototype._removeDice = function () {
 
 DiceApplication.prototype._rollAllDice = function () {
   if (this._allDice.length <= 0) return;
+
   var self = this;
   var nrOfDice = this._allDice.length;
   this._allDice = [];
 
   DiceApplication.audio.play();
+
   self._diceContainer.innerHTML = "";
   for (let i = 0; i < nrOfDice; i++) {
     self._insertDice();
   }
-
 }
 
 DiceApplication.prototype._countScore = function () {
   var score = 0;
   this._allDice.forEach(dice => {
-    score += dice.amount;
+    score += dice.getScore();
   });
   this._counter.updateCounter(score);
 }

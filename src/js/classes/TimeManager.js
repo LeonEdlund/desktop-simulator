@@ -2,11 +2,7 @@
 var TimeManager = (function () {
   function TimeManager() {
     this.subscribers = []; // array of callback functions
-    this.timeAsStrings = {
-      hour: "00",
-      minutes: "00",
-      seconds: "00",
-    }
+    this.timeAsStrings;
 
     this._updateTime();
     setInterval(this._updateTime.bind(this), 1000);

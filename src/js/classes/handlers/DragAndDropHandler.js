@@ -1,4 +1,4 @@
-function DragAndDropHandler(element, grabHandle, transparency) {
+function DragAndDropHandler(element, grabHandle) {
   this.element = element;
   this.grabHandle = grabHandle;
   this.isDragging = false;
@@ -6,7 +6,7 @@ function DragAndDropHandler(element, grabHandle, transparency) {
   this._offsetY;
 
   this.styleConfig = {
-    transparent: transparency || 0.5,
+    transparent: 0.5,
     nonTransparent: 1,
   }
 

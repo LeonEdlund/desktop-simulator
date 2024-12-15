@@ -11,10 +11,23 @@ function Counter() {
 
   this.counterLi.className = "dice-toolbar-counter-wrapper";
 
-  Object.values(this._numbers).forEach(number => {
+  this._numbers.forEach(number => {
     this.counterLi.appendChild(number);
   });
   this.element.appendChild(this.counterLi);
+}
+
+Counter.classNames = {
+  "0": "zero",
+  "1": "one",
+  "2": "two",
+  "3": "three",
+  "4": "four",
+  "5": "five",
+  "6": "six",
+  "7": "seven",
+  "8": "eight",
+  "9": "nine"
 }
 
 Counter.prototype.getCounter = function () {
@@ -26,29 +39,8 @@ Counter.prototype.updateCounter = function (score) {
   score = score.toString().padStart(5, "0");
 
   for (let i = 0; i < score.length; i++) {
-    self._numbers[i].className = self._getNumberClass(score[i]);
+    self._numbers[i].className = Counter.classNames[score[i]];
   }
-}
-
-Counter.prototype._getNumberClass = function (number) {
-  if (number > 9) {
-    throw ("number needs to be between 0 - 9");
-  }
-
-  var classNames = {
-    "0": "zero",
-    "1": "one",
-    "2": "two",
-    "3": "three",
-    "4": "four",
-    "5": "five",
-    "6": "six",
-    "7": "seven",
-    "8": "eight",
-    "9": "nine"
-  }
-
-  return classNames[number];
 }
 
 Counter.prototype.appendTo = function (parent) {
