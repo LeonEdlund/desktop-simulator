@@ -1,4 +1,4 @@
-// singleton (Can only have one instance and only exposes the instance and nothing else);
+// singleton (Can only have one instance and only exposes the instance and nothing else)
 var App = (function () {
   function App() {
     this.windowFactory = new WindowFactory();

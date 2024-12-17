@@ -89,7 +89,7 @@ DiceApplication.prototype._rollAllDice = function () {
 
 DiceApplication.prototype._countScore = function () {
   var score = 0;
-  this._allDice.forEach(dice => {
+  this._allDice.forEach(function (dice) {
     score += dice.getScore();
   });
   this._counter.updateCounter(score);

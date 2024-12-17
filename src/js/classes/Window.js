@@ -39,4 +39,3 @@ Window.prototype.appendTo = function (parent) {
 Window.prototype.closeWindow = function () {
   this.element.remove();
 }
-
