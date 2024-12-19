@@ -1,4 +1,5 @@
 function Counter() {
+  var self = this;
   this.element = document.createElement("ul");
   this.counterLi = document.createElement("li");
   this._numbers = [
@@ -11,9 +12,10 @@ function Counter() {
 
   this.counterLi.className = "dice-toolbar-counter-wrapper";
 
-  this._numbers.forEach(number => {
-    this.counterLi.appendChild(number);
+  this._numbers.forEach(function (number) {
+    self.counterLi.appendChild(number);
   });
+
   this.element.appendChild(this.counterLi);
 }
 
@@ -38,7 +40,7 @@ Counter.prototype.updateCounter = function (score) {
   var self = this;
   score = score.toString().padStart(5, "0");
 
-  for (let i = 0; i < score.length; i++) {
+  for (var i = 0; i < score.length; i++) {
     self._numbers[i].className = Counter.classNames[score[i]];
   }
 }

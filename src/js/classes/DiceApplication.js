@@ -82,7 +82,7 @@ DiceApplication.prototype._rollAllDice = function () {
   DiceApplication.audio.play();
 
   self._diceContainer.innerHTML = "";
-  for (let i = 0; i < nrOfDice; i++) {
+  for (var i = 0; i < nrOfDice; i++) {
     self._insertDice();
   }
 }

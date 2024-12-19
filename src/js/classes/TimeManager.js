@@ -19,7 +19,7 @@ var TimeManager = (function () {
   }
 
   TimeManager.prototype._renderSubscribers = function () {
-    this.subscribers.forEach(callback => {
+    this.subscribers.forEach(function (callback) {
       callback();
     });
   }
