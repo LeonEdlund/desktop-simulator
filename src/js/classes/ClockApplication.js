@@ -1,37 +1,128 @@
-function ClockApplication() {
-  Window.call(this);
-  this.TimeManager = TimeManager.getInstance();
+//--------------------------------------------------------------------------
+// Constructor scope
+//--------------------------------------------------------------------------
 
-  this.createWindow("clock-window-wrapper", "clock-menubar-wrapper");
+/**
+ * Creates a new instance of a dice application.
+ * 
+ * @class
+ * @extends {CustomWindow}
+ * @classdesc - ...
+ * 
+ * @constructor
+ * @param {TimeManager} timeManager - global time.
+ */
+function ClockApplication(timeManager) {
+  //--------------------------------------------------------------------------
+  // Super call
+  //--------------------------------------------------------------------------
+
+  /**
+   * Extends UiWindow.
+   */
+  CustomWindow.call(this);
+
+  //--------------------------------------------------------------------------
+  // Private properties
+  //--------------------------------------------------------------------------
+
+  /**
+   * ...
+   * @private
+   * @type {TimeManager}
+   */
+  this.m_timeManager = timeManager;
+
+  /**
+   * ...
+   * @private
+   * @type {Element}
+   */
   this._clockContainer = document.createElement("div");
-  this._clockContainer.className = "clock-content-wrapper";
 
-  this._hourDigits = this._createDigits("hour");
-  this._minutesDigits = this._createDigits("minute");
-  this._secondsDigits = this._createDigits("second");
+  /**
+   * ...
+   * @private
+   * @type {Object}
+   */
+  this.m_digits = {
+    hour: this._createDigits("hour"),
+    minutes: this._createDigits("minute"),
+    seconds: this._createDigits("second"),
+  }
 
-  this._clockContainer.appendChild(this._hourDigits);
-  this._clockContainer.appendChild(this._minutesDigits);
-  this._clockContainer.appendChild(this._secondsDigits);
-  this.element.appendChild(this._clockContainer);
+  //--------------------------------------------------------------------------
+  // Constructor call
+  //--------------------------------------------------------------------------
 
-  this.TimeManager.subscribe(this.renderClock.bind(this));
+  /**
+   * Invoke secondary constructor
+   */
+  this.m_construct();
+
 }
 
-ClockApplication.prototype = Object.create(Window.prototype);
+//--------------------------------------------------------------------------
+// Inheritance
+//--------------------------------------------------------------------------
+
+ClockApplication.prototype = Object.create(CustomWindow.prototype);
 ClockApplication.prototype.constructor = ClockApplication;
 
-ClockApplication.prototype.renderClock = function () {
-  var TimeManager = this.TimeManager.timeAsStrings;
-  var hour = TimeManager.hour;
-  var minutes = TimeManager.minutes;
-  var seconds = TimeManager.seconds;
+//--------------------------------------------------------------------------
+// Public prototype methods
+//--------------------------------------------------------------------------
 
-  this._updateDigits(this._hourDigits, hour[0], hour[1]);
-  this._updateDigits(this._minutesDigits, minutes[0], minutes[1]);
-  this._updateDigits(this._secondsDigits, seconds.toString()[0], seconds[1]);
+/**
+ * ...
+ * 
+ * @public
+ * @returns {undefined}
+ */
+ClockApplication.prototype.renderClock = function () {
+  var time = this.m_timeManager.m_timeAsStrings;
+  var hour = time.hour;
+  var minutes = time.minutes;
+  var seconds = time.seconds;
+
+  this._updateDigits(this.m_digits.hour, hour[0], hour[1]);
+  this._updateDigits(this.m_digits.minutes, minutes[0], minutes[1]);
+  this._updateDigits(this.m_digits.seconds, seconds[0], seconds[1]);
 }
 
+//--------------------------------------------------------------------------
+// Private prototype methods
+//--------------------------------------------------------------------------
+
+/**
+ * Secondary constructor method.
+ * 
+ * @private
+ * @returns {undefined}
+ */
+ClockApplication.prototype.m_construct = function () {
+  this.m_createWindow("clock-window-wrapper", "clock-menubar-wrapper");
+
+  this._clockContainer.className = "clock-content-wrapper";
+
+  this._clockContainer.appendChild(this.m_digits.hour);
+  this._clockContainer.appendChild(this.m_digits.minutes);
+  this._clockContainer.appendChild(this.m_digits.seconds);
+
+  // parent call
+  this.m_addElement(this._clockContainer);
+
+  this.m_timeManager.subscribe(this.renderClock.bind(this));
+}
+
+/**
+ * ...
+ * 
+ * @private
+ * 
+ * @param {string} unitClass - ...
+ * @returns {Element}
+ */
 ClockApplication.prototype._createDigits = function (unitClass) {
   var ul = document.createElement("ul");
   var digitOne = document.createElement("li");
@@ -47,24 +138,45 @@ ClockApplication.prototype._createDigits = function (unitClass) {
   return ul;
 }
 
+
+/**
+ * ...
+ * 
+ * @private
+ * 
+ * @param {HTMLElement} element - ...
+ * @param {number} digitOne - ...
+ * @param {number} digitTwo - ...
+ * 
+ * @returns {undefined}
+ */
 ClockApplication.prototype._updateDigits = function (element, digitOne, digitTwo) {
   var digits = element.querySelectorAll("li");
-  digits[0].classList = this._getNumberClass(digitOne);
-  digits[1].classList = this._getNumberClass(digitTwo);
+  digits[0].className = this._getNumberClass(parseInt(digitOne, 10));
+  digits[1].className = this._getNumberClass(parseInt(digitTwo, 10));
 }
 
+/**
+ * ...
+ * 
+ * @private
+ * 
+ * @param {number} number - ...
+ * 
+ * @returns {string}
+ */
 ClockApplication.prototype._getNumberClass = function (number) {
-  var classNames = {
-    0: "clock-digit-zero",
-    1: "clock-digit-one",
-    2: "clock-digit-two",
-    3: "clock-digit-three",
-    4: "clock-digit-four",
-    5: "clock-digit-five",
-    6: "clock-digit-six",
-    7: "clock-digit-seven",
-    8: "clock-digit-eight",
-    9: "clock-digit-nine"
-  };
+  var classNames = [
+    "clock-digit-zero",
+    "clock-digit-one",
+    "clock-digit-two",
+    "clock-digit-three",
+    "clock-digit-four",
+    "clock-digit-five",
+    "clock-digit-six",
+    "clock-digit-seven",
+    "clock-digit-eight",
+    "clock-digit-nine"
+  ];
   return classNames[number];
 }

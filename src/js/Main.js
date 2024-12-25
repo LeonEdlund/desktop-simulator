@@ -1,9 +1,14 @@
 /**
- * Starting point for application
- * @returns {undefined}
+ * Starting point for application.
+ * Eventlistener removed once app is loaded.
  */
-function main() {
+window.addEventListener("load", function () {
   var app = new App();
   app.start();
-}
-window.addEventListener("load", main, { once: true });
+}, { once: true })
+
+
+
+
+
+//console.log(Object.prototype.toString.call());

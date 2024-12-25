@@ -1,9 +1,46 @@
+//--------------------------------------------------------------------------
+// Constructor scope
+//--------------------------------------------------------------------------
+
+/**
+ * @class
+ * @classdesc - Represents a dice
+ * @constructor - Creates a dice
+ */
 function Dice() {
-  this._element;
-  this._amount = Math.floor(Math.random() * 6) + 1;
+  //--------------------------------------------------------------------------
+  // Private methods
+  //--------------------------------------------------------------------------
+
+  /**
+   * The dice dom element.
+   * 
+   * @type {Element}
+   * @private
+   */
+  this.m_element;
+
+  /**
+   * The dice score.
+   * 
+   * @type {number}
+   * @private
+   */
+  this.m_amount = Math.floor(Math.random() * 6) + 1;
 }
 
-Dice.sides = {
+
+//--------------------------------------------------------------------------
+// Private static properties
+//--------------------------------------------------------------------------
+
+/**
+ * The css class names for the sides of the dice.
+ * 
+ * @type {Object}
+ * @private
+ */
+Dice.m_sides = {
   1: "dice-side-one",
   2: "dice-side-two",
   3: "dice-side-three",
@@ -12,18 +49,43 @@ Dice.sides = {
   6: "dice-side-six",
 }
 
+//--------------------------------------------------------------------------
+// Public getter and setter methods
+//--------------------------------------------------------------------------
+
+/**
+ * 
+ * @returns {number}
+ */
 Dice.prototype.getScore = function () {
-  return this._amount;
+  return this.m_amount;
 }
 
+//--------------------------------------------------------------------------
+// Public methods
+//--------------------------------------------------------------------------
+
+/**
+ * Creates a li element representing a dice.
+ * 
+ * @public
+ * @returns {Element}
+ */
 Dice.prototype.generateDice = function () {
   var diceLi = document.createElement("li");
   diceLi.classList.add("dice");
-  diceLi.classList.add(Dice.sides[this._amount]);
-  this._element = diceLi;
-  return diceLi;
+  diceLi.classList.add(Dice.m_sides[this.m_amount]);
+  this.m_element = diceLi;
+
+  return this.m_element;
 }
 
+/**
+ * removes dice from DOM.
+ * 
+ * @public
+ * @returns {undefined}
+ */
 Dice.prototype.delete = function () {
-  this._element.remove();
+  this.m_element.remove();
 }

@@ -2,14 +2,15 @@ npx google-closure-compiler \
 --language_in ECMASCRIPT5_STRICT \
 --language_out ECMASCRIPT5_STRICT \
 --warning_level VERBOSE \
---js=classes/Window.js \
+--output_wrapper "(function() {%output%})();" \
+--js=classes/CustomWindow.js \
 --js=classes/Dice.js \
---js=classes/Counter.js \
+--js=classes/ScoreCounter.js \
 --js=classes/DiceApplication.js \
 --js=classes/TimeManager.js \
 --js=classes/ClockApplication.js \
---js=classes/factories/WindowFactory.js \
 --js=classes/handlers/DragAndDropHandler.js \
+--js=classes/factories/WindowFactory.js \
 --js=classes/App.js \
 --js=main.js \
 --js_output_file=out.js

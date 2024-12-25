@@ -1,57 +1,142 @@
+//--------------------------------------------------------------------------
+// Constructor scope 
+//--------------------------------------------------------------------------
+
+/**
+ * @class
+ * @classdesc - Represents a DragAndDropHandler.
+ * @constructor - Creates a Drag and Drop handler.
+ * 
+ * @param {Element} element - 
+ * @param {Element} grabHandle - 
+ */
 function DragAndDropHandler(element, grabHandle) {
-  this.element = element;
-  this.grabHandle = grabHandle;
-  this.isDragging = false;
-  this._offsetX;
-  this._offsetY;
+  //--------------------------------------------------------------------------
+  // Private properties
+  //--------------------------------------------------------------------------
 
-  this.styleConfig = {
-    transparent: 0.5,
-    nonTransparent: 1,
-  }
+  /**
+   * The moving element.
+   * 
+   * @type {Element}
+   * @private
+   */
+  this.m_element = element;
 
-  //binds this to the method
-  this._mouseMove = this._mouseMove.bind(this);
-  this._mouseUp = this._mouseUp.bind(this);
+  /**
+   * The draggable handle.
+   * 
+   * @type {Element}
+   * @private
+   */
+  this.m_grabHandle = grabHandle;
 
-  this.grabHandle.addEventListener("mousedown", this._dragStart.bind(this));
+  /**
+  * Flag to check if window is currently dragging.
+  * 
+  * @type {boolean}
+  * @private
+  */
+  this.m_isDragging = false;
+
+  //--------------------------------------------------------------------------
+  // Constructor call
+  //--------------------------------------------------------------------------
+
+  /**
+   * Invokes secondary constructor call
+   */
+  this.m_construct();
 }
 
+//--------------------------------------------------------------------------
+// Static variabels
+//--------------------------------------------------------------------------
+
+/**
+ * zIndex for the draggable element  
+ * @static
+ * @private
+ * @type {number}
+ */
 DragAndDropHandler.zIndex = 1;
 
-DragAndDropHandler.prototype._dragStart = function (event) {
-  this.isDragging = true;
-  DragAndDropHandler.zIndex++;
+//--------------------------------------------------------------------------
+// Private prototype methods
+//--------------------------------------------------------------------------
 
-  this.offsetX = event.clientX - this.element.offsetLeft;
-  this.offsetY = event.clientY - this.element.offsetTop;
+/**
+ * The class constructor.
+ * @private
+ * @returns {undefined}
+ */
+DragAndDropHandler.prototype.m_construct = function () {
+  this.m_mouseMove = this.m_mouseMove.bind(this);
+  this.m_mouseUp = this.m_mouseUp.bind(this);
 
-  this.element.style.opacity = this.styleConfig.transparent;
-  this.element.style.zIndex = DragAndDropHandler.zIndex;
-
-  document.addEventListener("mousemove", this._mouseMove);
-  document.addEventListener("mouseup", this._mouseUp);
+  this.m_grabHandle.addEventListener("mousedown", this.m_dragStart.bind(this));
 }
 
-DragAndDropHandler.prototype._mouseMove = function (event) {
-  if (!this.isDragging) return;
+/**
+ * ...
+ * @private
+ * @param {Event} event - ...
+ * @returns {undefined}
+ */
+DragAndDropHandler.prototype.m_dragStart = function (event) {
+  var self = this;
+  var transparentValue = 0.5;
+  this.m_isDragging = true;
+  DragAndDropHandler.zIndex++;
 
-  var left = event.clientX - this.offsetX;
-  var top = event.clientY - this.offsetY;
+  var offsetX = event.clientX - this.m_element.offsetLeft;
+  var offsetY = event.clientY - this.m_element.offsetTop;
+
+  this.m_element.style.opacity = transparentValue;
+  this.m_element.style.zIndex = DragAndDropHandler.zIndex;
+
+  document.addEventListener("mousemove", function (event) {
+    self.m_mouseMove(event, offsetX, offsetY);
+  });
+  document.addEventListener("mouseup", this.m_mouseUp);
+}
+
+/**
+ * ...
+ * @private
+ * @param {Event} event - ...
+ * @param {number} offsetX - ...
+ * @param {number} offsetY - ...
+ * @returns {undefined}
+ */
+DragAndDropHandler.prototype.m_mouseMove = function (event, offsetX, offsetY) {
+  if (!this.m_isDragging) return;
+
+  var left = event.clientX - offsetX;
+  var top = event.clientY - offsetY;
 
   if (left < 0) left = 0;
   if (top < 22) top = 22;
 
-  this.element.style.left = left + 'px';
-  this.element.style.top = top + 'px';
+  this.m_element.style.left = left + 'px';
+  this.m_element.style.top = top + 'px';
 }
 
-DragAndDropHandler.prototype._mouseUp = function (event) {
-  if (this.isDragging) this.isDragging = false;
+/**
+ * ...
+ * @private
+ * @param {Event} event - ...
+ * @returns {undefined}
+ */
+DragAndDropHandler.prototype.m_mouseUp = function (event) {
+  if (this.m_isDragging) this.m_isDragging = false;
 
-  this.element.style.opacity = this.styleConfig.nonTransparent;
-  this.element.style.zIndex = this.styleConfig.defaultZIndex;
+  var nonTransparentValue = 1;
+  this.m_element.style.opacity = nonTransparentValue;
 
-  document.removeEventListener("mousemove", this._mouseMove.bind(this));
-  document.removeEventListener("mouseup", this._mouseUp.bind(this));
+  // fix later
+
+  // document.removeEventListener("mousemove", this.m_mouseMove);
+  // document.removeEventListener("mouseup", this.m_mouseUp);
 }
+

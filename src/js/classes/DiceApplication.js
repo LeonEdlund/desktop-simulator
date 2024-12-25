@@ -1,96 +1,243 @@
+//--------------------------------------------------------------------------
+// Constructor scope
+//--------------------------------------------------------------------------
+
+/**
+ * Creates a new instance of a dice application.
+ * 
+ * @class
+ * @extends {CustomWindow}
+ * @classdesc
+ * 
+ * @constructor
+ * @param {number} maxDice - The max number of dice for the application.
+ * @param {ScoreCounter} counter - The score counter object.
+ */
 function DiceApplication(maxDice, counter) {
-  Window.call(this);
+  //--------------------------------------------------------------------------
+  // Super call
+  //--------------------------------------------------------------------------
 
-  this._diceContainer;
-  this._allDice = [];
-  this._maxDice = maxDice;
-  this._counter = counter;
+  /**
+   * Extends UiWindow.
+   */
+  CustomWindow.call(this);
 
-  this.createWindow("dice-window-wrapper", "dice-menubar-wrapper");
-  this._addToolbar();
+  //--------------------------------------------------------------------------
+  // Private properties
+  //--------------------------------------------------------------------------
+
+  /**
+   * Array of all dices.
+   * 
+   * @private
+   * @type {Array}
+   */
+  this.m_allDice = [];
+
+  /**
+   * The score counter object.
+   * 
+   * @private
+   * @type {ScoreCounter}
+   */
+  this.m_counter = counter;
+
+  /**
+   * The DOM element that holds all dices.
+   * 
+   * @private
+   * @type {Element}
+   */
+  this.m_diceContainer = this.m_createDiceContainer();
+
+  /**
+   * The max number of dices the window can handle.
+   * 
+   * @private
+   * @type {number}
+   */
+  this.m_maxDice = maxDice;
+
+
+  //--------------------------------------------------------------------------
+  // Constructor call
+  //--------------------------------------------------------------------------
+
+  /**
+   * Invokes secondary constructor
+   */
+  this.m_construct();
 }
 
-// Extends Window
-DiceApplication.prototype = Object.create(Window.prototype);
+//--------------------------------------------------------------------------
+// Inheritance
+//--------------------------------------------------------------------------
+DiceApplication.prototype = Object.create(CustomWindow.prototype);
 DiceApplication.prototype.constructor = DiceApplication;
 
-// Static variables
-DiceApplication.audio = new Audio("/src/wav/add.wav");
+//--------------------------------------------------------------------------
+// Static properties
+//--------------------------------------------------------------------------
 
-DiceApplication.prototype._addToolbar = function () {
+/**
+ * The sound to play when pressing buttons.
+ * 
+ * @static
+ * @private
+ * @type {Audio}
+ */
+DiceApplication.m_audio = new Audio("/src/wav/add.wav");
+
+//--------------------------------------------------------------------------
+// Private prototype methods
+//--------------------------------------------------------------------------
+
+/**
+ * Secondary constructor method.
+ * 
+ * @private
+ * @returns {undefined}
+ */
+DiceApplication.prototype.m_construct = function () {
+  this.m_createWindow("dice-window-wrapper", "dice-menubar-wrapper");
+  var toolbar = this.m_addToolbar();
+  this.m_addElement(toolbar);
+  this.m_addElement(this.m_diceContainer);
+}
+
+/**
+ * Creates the toolbar for the dice application.
+ * 
+ * @private
+ * @returns {Element}
+ */
+DiceApplication.prototype.m_addToolbar = function () {
+  // Create elements
   var toolbar = document.createElement("div");
   var toolbarUl = document.createElement("ul");
   var add = document.createElement("li");
   var remove = document.createElement("li");
   var roll = document.createElement("li");
   var counterWrapper = document.createElement("li");
-  var diceContainer = document.createElement("div");
-  var diceUl = document.createElement("ul");
 
+
+  // add classes
   toolbar.classList.add("dice-toolbar-wrapper");
   add.classList.add("add");
   remove.classList.add("remove");
   roll.classList.add("roll");
-  diceContainer.classList.add("dice-content-wrapper");
 
+
+  // append
   toolbar.appendChild(toolbarUl);
   toolbarUl.appendChild(add);
   toolbarUl.appendChild(remove);
   toolbarUl.appendChild(roll);
   toolbarUl.appendChild(counterWrapper);
-  counterWrapper.appendChild(this._counter.getCounter());
-  diceContainer.appendChild(diceUl);
-  this.element.appendChild(toolbar);
-  this.element.appendChild(diceContainer);
+  counterWrapper.appendChild(this.m_counter.getCounter());
 
-  this._diceContainer = diceContainer;
-
+  // Add eventlistener
   this._addToolbarListeners(add, remove, roll);
+
+  return toolbar;
 }
 
+/**
+ * Creates a div container for dices.
+ * 
+ * @private
+ * 
+ * @param {Element} addBtn - Add dice button.
+ * @param {Element} removeBtn - Remove dice button.
+ * @param {Element} rollBtn - Roll dice button.
+ * 
+ * @returns {undefined}
+ */
 DiceApplication.prototype._addToolbarListeners = function (addBtn, removeBtn, rollBtn) {
   addBtn.addEventListener("click", this._insertDice.bind(this));
   removeBtn.addEventListener("click", this._removeDice.bind(this));
   rollBtn.addEventListener("click", this._rollAllDice.bind(this));
 }
 
-DiceApplication.prototype._insertDice = function () {
-  if (this._allDice.length >= this._maxDice) return;
-  var dice = new Dice();
-  this._allDice.push(dice);
 
-  this._diceContainer.appendChild(dice.generateDice());
-  this._countScore();
-  DiceApplication.audio.play();
+/**
+ * Creates a div container for dices.
+ * 
+ * @private
+ * @returns {Element}
+ */
+DiceApplication.prototype.m_createDiceContainer = function () {
+  var diceContainer = document.createElement("div");
+  var diceUl = document.createElement("ul");
+
+  diceContainer.classList.add("dice-content-wrapper");
+  diceContainer.appendChild(diceUl);
+
+  return diceContainer;
 }
 
+/**
+ * Adds a new dice to the dice container.
+ * 
+ * @private
+ * @returns {undefined}
+ */
+DiceApplication.prototype._insertDice = function () {
+  if (this.m_allDice.length >= this.m_maxDice) return;
+  var dice = new Dice();
+  this.m_allDice.push(dice);
+
+  this.m_diceContainer.appendChild(dice.generateDice());
+  this._countScore();
+  DiceApplication.m_audio.play();
+}
+
+/**
+ * Removes a new dice to the dice container.
+ * 
+ * @private
+ * @returns {undefined}
+ */
 DiceApplication.prototype._removeDice = function () {
-  if (this._allDice.length <= 0) return;
-  var removedDice = this._allDice.pop();
+  if (this.m_allDice.length <= 0) return;
+  var removedDice = this.m_allDice.pop();
   removedDice.delete();
   this._countScore();
-  DiceApplication.audio.play();
+  DiceApplication.m_audio.play();
 }
 
+/**
+ * Rerolls all dices in the dice container.
+ * 
+ * @private
+ * @returns {undefined}
+ */
 DiceApplication.prototype._rollAllDice = function () {
-  if (this._allDice.length <= 0) return;
+  if (this.m_allDice.length <= 0) return;
 
   var self = this;
-  var nrOfDice = this._allDice.length;
-  this._allDice = [];
+  var nrOfDice = this.m_allDice.length;
+  this.m_allDice = [];
 
-  DiceApplication.audio.play();
+  DiceApplication.m_audio.play();
 
-  self._diceContainer.innerHTML = "";
+  self.m_diceContainer.innerHTML = "";
   for (var i = 0; i < nrOfDice; i++) {
     self._insertDice();
   }
 }
 
+/**
+ * Counts and updates the score.
+ * 
+ * @private
+ * @returns {undefined}
+ */
 DiceApplication.prototype._countScore = function () {
   var score = 0;
-  this._allDice.forEach(function (dice) {
+  this.m_allDice.forEach(function (dice) {
     score += dice.getScore();
   });
-  this._counter.updateCounter(score);
+  this.m_counter.updateCounter(score);
 }
