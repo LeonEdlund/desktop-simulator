@@ -90,6 +90,20 @@ ClockApplication.prototype.renderClock = function () {
   this._updateDigits(this.m_digits.seconds, seconds[0], seconds[1]);
 }
 
+// /**
+//  * Dispose resources
+//  * 
+//  * @public
+//  * @returns {undefined}
+//  */
+// ClockApplication.prototype.dispose = function () {
+//   console.log(this.m_timeManager);
+//   this.m_timeManager.unSubscribe(this.renderClock);
+//   this.m_timeManager = null;
+//   this._clockContainer = null;
+//   this.m_digits = null;
+// }
+
 //--------------------------------------------------------------------------
 // Private prototype methods
 //--------------------------------------------------------------------------

@@ -12,8 +12,6 @@ var TimeManager = (function () {
   /**
    * ...
    * @constructor - Creates a TimeManager.
-   * @private
-   * @returns {undefined}
    */
   function TimeManager() {
     //--------------------------------------------------------------------------
@@ -52,7 +50,7 @@ var TimeManager = (function () {
   //--------------------------------------------------------------------------
 
   /**
-   * Renders time buy calling subscribers callback functions. 
+   * Adds callback function to array.
    * 
    * @param {Function} callback - A callback function to render the current time. 
    * @returns {undefined}
@@ -60,6 +58,15 @@ var TimeManager = (function () {
   TimeManager.prototype.subscribe = function (callback) {
     this.m_subscribers.push(callback);
     callback();
+  }
+
+  TimeManager.prototype.unSubscribe = function (callback) {
+    var index = this.m_subscribers.indexOf(callback);
+    if (index !== -1) {
+      this.m_subscribers.splice(index, 1);
+    }
+
+    console.log(this.m_subscribers);
   }
 
   //--------------------------------------------------------------------------
@@ -112,7 +119,6 @@ var TimeManager = (function () {
     * If no instance exists, it creates one.
     * 
     * @public
-    * @constructor
     * @returns {TimeManager}
     */
     getInstance: function () {

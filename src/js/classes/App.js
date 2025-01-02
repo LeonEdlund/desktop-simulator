@@ -33,11 +33,11 @@ function App() {
  * @returns {undefined} 
  */
 App.prototype.start = function () {
-  var _diceBtn = document.getElementById("icon-dice");
-  var _clockBtn = document.getElementById("icon-clock");
+  var diceBtn = document.getElementById("icon-dice");
+  var clockBtn = document.getElementById("icon-clock");
 
-  _diceBtn.addEventListener("click", this.openDiceWindow.bind(this));
-  _clockBtn.addEventListener("click", this.openClockWindow.bind(this));
+  diceBtn.addEventListener("click", this.m_openDiceWindow.bind(this));
+  clockBtn.addEventListener("click", this.m_openClockWindow.bind(this));
 }
 
 //--------------------------------------------------------------------------
@@ -50,7 +50,7 @@ App.prototype.start = function () {
  * @private
  * @returns {undefined} 
  */
-App.prototype.openDiceWindow = function () {
+App.prototype.m_openDiceWindow = function () {
   var diceWindow = this.windowFactory.createWindow("dice");
   diceWindow.appendTo(document.getElementById("page-content-wrapper"));
 }
@@ -61,7 +61,7 @@ App.prototype.openDiceWindow = function () {
  * @private
  * @returns {undefined} 
  */
-App.prototype.openClockWindow = function () {
+App.prototype.m_openClockWindow = function () {
   var clockWindow = this.windowFactory.createWindow("clock");
   clockWindow.appendTo(document.getElementById("page-content-wrapper"));
 }

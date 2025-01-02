@@ -49,7 +49,7 @@ function DiceApplication(maxDice, counter) {
    * @private
    * @type {Element}
    */
-  this.m_diceContainer = this.m_createDiceContainer();
+  this.m_diceContainer;
 
   /**
    * The max number of dices the window can handle.
@@ -89,6 +89,20 @@ DiceApplication.prototype.constructor = DiceApplication;
  */
 DiceApplication.m_audio = new Audio("/src/wav/add.wav");
 
+
+//--------------------------------------------------------------------------
+// Public prototype methods
+//--------------------------------------------------------------------------
+
+DiceApplication.prototype.dispose = function () {
+  this.m_allDice.forEach(function (dice) {
+    dice.delete();
+  });
+  this.m_counter = null;
+  this.m_diceContainer = null;
+  console.log("disposed");
+}
+
 //--------------------------------------------------------------------------
 // Private prototype methods
 //--------------------------------------------------------------------------
@@ -103,7 +117,7 @@ DiceApplication.prototype.m_construct = function () {
   this.m_createWindow("dice-window-wrapper", "dice-menubar-wrapper");
   var toolbar = this.m_addToolbar();
   this.m_addElement(toolbar);
-  this.m_addElement(this.m_diceContainer);
+  this.m_addElement(this.m_createDiceContainer());
 }
 
 /**
@@ -138,7 +152,7 @@ DiceApplication.prototype.m_addToolbar = function () {
   counterWrapper.appendChild(this.m_counter.getCounter());
 
   // Add eventlistener
-  this._addToolbarListeners(add, remove, roll);
+  this.m_addToolbarListeners(add, remove, roll);
 
   return toolbar;
 }
@@ -154,7 +168,7 @@ DiceApplication.prototype.m_addToolbar = function () {
  * 
  * @returns {undefined}
  */
-DiceApplication.prototype._addToolbarListeners = function (addBtn, removeBtn, rollBtn) {
+DiceApplication.prototype.m_addToolbarListeners = function (addBtn, removeBtn, rollBtn) {
   addBtn.addEventListener("click", this._insertDice.bind(this));
   removeBtn.addEventListener("click", this._removeDice.bind(this));
   rollBtn.addEventListener("click", this._rollAllDice.bind(this));
@@ -174,6 +188,7 @@ DiceApplication.prototype.m_createDiceContainer = function () {
   diceContainer.classList.add("dice-content-wrapper");
   diceContainer.appendChild(diceUl);
 
+  this.m_diceContainer = diceUl
   return diceContainer;
 }
 
@@ -185,12 +200,37 @@ DiceApplication.prototype.m_createDiceContainer = function () {
  */
 DiceApplication.prototype._insertDice = function () {
   if (this.m_allDice.length >= this.m_maxDice) return;
+  // Create dice and Dom element
   var dice = new Dice();
-  this.m_allDice.push(dice);
+  var domDice = dice.generateDice();
+  this.m_addDiceListener(dice, domDice);
 
-  this.m_diceContainer.appendChild(dice.generateDice());
-  this._countScore();
+  this.m_allDice.push(dice);
+  this.m_diceContainer.appendChild(domDice);
+
   DiceApplication.m_audio.play();
+  this._countScore();
+}
+
+/**
+ * Adds eventListeners too the dice to reroll dice.
+ * 
+ * @private
+ * @returns {undefined}
+ */
+DiceApplication.prototype.m_addDiceListener = function (dice, domDice) {
+  var self = this;
+
+  domDice.addEventListener("click", function () {
+    dice.roll();
+    var newDice = dice.generateDice();
+
+    self.m_addDiceListener(dice, newDice);
+    self.m_diceContainer.replaceChild(newDice, domDice);
+
+    DiceApplication.m_audio.play();
+    self._countScore();
+  });
 }
 
 /**

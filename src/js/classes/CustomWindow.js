@@ -30,6 +30,14 @@ function CustomWindow() {
   //--------------------------------------------------------------------------
 
   /**
+   * Window close button.
+   * 
+   * @private
+   * @type {Element}
+   */
+  this.m_closeBtn;
+
+  /**
    * The drag and drop handler
    * 
    * @private
@@ -61,7 +69,13 @@ CustomWindow.prototype.appendTo = function (parent) {
  * @returns {undefined}
  */
 CustomWindow.prototype.closeWindow = function () {
+  if (this.dispose) {
+    this.dispose();
+  }
+
+  this.m_closeBtn.removeEventListener("click", this.closeWindow);
   this.m_element.remove();
+  this.m_dragHandler.dispose();
 }
 
 //--------------------------------------------------------------------------
@@ -89,7 +103,8 @@ CustomWindow.prototype.m_createWindow = function (windowClass, menuClass) {
   windowWrapper.appendChild(menuWrapper);
 
   this.m_element = windowWrapper;
-  this.addListeners(close, menuWrapper);
+  this.m_closeBtn = close;
+  this.m_addListeners(menuWrapper);
 }
 
 /**
@@ -108,14 +123,15 @@ CustomWindow.prototype.m_addElement = function (element) {
 //--------------------------------------------------------------------------
 
 /**
- * Adds eventlistener to close button and drag and drop.
+ * Adds eventlistener to close button and drag and drop handler.
  * 
  * @private
- * @param {Element} closeBtn - The type of window that should be created, clock or dice. 
  * @param {Element} menubar - The type of window that should be created, clock or dice. 
  * @returns {undefined}
  */
-CustomWindow.prototype.addListeners = function (closeBtn, menubar) {
-  closeBtn.addEventListener("click", this.closeWindow.bind(this));
-  this.m_dragHandler = new DragAndDropHandler(this.m_element, menubar)
+CustomWindow.prototype.m_addListeners = function (menubar) {
+  this.closeWindow = this.closeWindow.bind(this);
+
+  this.m_closeBtn.addEventListener("click", this.closeWindow);
+  this.m_dragHandler = new DragAndDropHandler(this.m_element, menubar, { boundaryTop: 22 });
 }

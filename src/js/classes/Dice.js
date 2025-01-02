@@ -26,7 +26,9 @@ function Dice() {
    * @type {number}
    * @private
    */
-  this.m_amount = Math.floor(Math.random() * 6) + 1;
+  this.m_amount = 1;
+
+  this.roll();
 }
 
 
@@ -78,6 +80,16 @@ Dice.prototype.generateDice = function () {
   this.m_element = diceLi;
 
   return this.m_element;
+}
+
+/**
+ * Rolls dice.
+ * 
+ * @public
+ * @returns {undefined}
+ */
+Dice.prototype.roll = function () {
+  this.m_amount = Math.floor(Math.random() * 6) + 1;
 }
 
 /**
