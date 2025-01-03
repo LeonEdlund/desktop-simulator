@@ -28,6 +28,8 @@ function Dice() {
    */
   this.m_amount = 1;
 
+  this.m_className;
+
   this.roll();
 }
 
@@ -76,7 +78,10 @@ Dice.prototype.getScore = function () {
 Dice.prototype.generateDice = function () {
   var diceLi = document.createElement("li");
   diceLi.classList.add("dice");
-  diceLi.classList.add(Dice.m_sides[this.m_amount]);
+
+  this.m_className = Dice.m_sides[this.m_amount]
+  diceLi.classList.add(this.m_className);
+
   this.m_element = diceLi;
 
   return this.m_element;
