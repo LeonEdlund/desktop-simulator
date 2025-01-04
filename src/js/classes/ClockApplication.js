@@ -38,7 +38,7 @@ function ClockApplication(timeManager) {
    * @private
    * @type {Element}
    */
-  this._clockContainer = document.createElement("div");
+  this.m_clockContainer = document.createElement("div");
 
   /**
    * ...
@@ -80,7 +80,7 @@ ClockApplication.prototype.constructor = ClockApplication;
  * @returns {undefined}
  */
 ClockApplication.prototype.renderClock = function () {
-  var time = this.m_timeManager.m_timeAsStrings;
+  var time = this.m_timeManager.timeAsStrings;
   var hour = time.hour;
   var minutes = time.minutes;
   var seconds = time.seconds;
@@ -90,19 +90,15 @@ ClockApplication.prototype.renderClock = function () {
   this._updateDigits(this.m_digits.seconds, seconds[0], seconds[1]);
 }
 
-// /**
-//  * Dispose resources
-//  * 
-//  * @public
-//  * @returns {undefined}
-//  */
-// ClockApplication.prototype.dispose = function () {
-//   console.log(this.m_timeManager);
-//   this.m_timeManager.unSubscribe(this.renderClock);
-//   this.m_timeManager = null;
-//   this._clockContainer = null;
-//   this.m_digits = null;
-// }
+/**
+ * Dispose resources
+ * 
+ * @public
+ * @returns {undefined}
+ */
+ClockApplication.prototype.dispose = function () {
+  this.m_timeManager.unSubscribe(this.boundCallback);
+}
 
 //--------------------------------------------------------------------------
 // Private prototype methods
@@ -117,16 +113,17 @@ ClockApplication.prototype.renderClock = function () {
 ClockApplication.prototype.m_construct = function () {
   this.m_createWindow("clock-window-wrapper", "clock-menubar-wrapper");
 
-  this._clockContainer.className = "clock-content-wrapper";
+  this.m_clockContainer.className = "clock-content-wrapper";
 
-  this._clockContainer.appendChild(this.m_digits.hour);
-  this._clockContainer.appendChild(this.m_digits.minutes);
-  this._clockContainer.appendChild(this.m_digits.seconds);
+  this.m_clockContainer.appendChild(this.m_digits.hour);
+  this.m_clockContainer.appendChild(this.m_digits.minutes);
+  this.m_clockContainer.appendChild(this.m_digits.seconds);
 
   // parent call
-  this.m_addElement(this._clockContainer);
+  this.m_addElement(this.m_clockContainer);
 
-  this.m_timeManager.subscribe(this.renderClock.bind(this));
+  this.boundCallback = this.renderClock.bind(this);
+  this.m_timeManager.subscribe(this.boundCallback);
 }
 
 /**

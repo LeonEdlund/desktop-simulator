@@ -9,7 +9,19 @@
  */
 function Dice() {
   //--------------------------------------------------------------------------
-  // Private methods
+  // Public properties
+  //--------------------------------------------------------------------------
+
+  /**
+   * The dice score.
+   * 
+   * @type {number}
+   * @public
+   */
+  this.amount = Math.floor(Math.random() * 6) + 1;
+
+  //--------------------------------------------------------------------------
+  // Private properties
   //--------------------------------------------------------------------------
 
   /**
@@ -18,19 +30,12 @@ function Dice() {
    * @type {Element}
    * @private
    */
-  this.m_element;
+  this.m_element = null;
 
   /**
-   * The dice score.
-   * 
-   * @type {number}
-   * @private
+   * Second constructor call.
    */
-  this.m_amount = 1;
-
-  this.m_className;
-
-  this.roll();
+  this.m_construct();
 }
 
 
@@ -62,7 +67,7 @@ Dice.m_sides = {
  * @returns {number}
  */
 Dice.prototype.getScore = function () {
-  return this.m_amount;
+  return this.amount;
 }
 
 //--------------------------------------------------------------------------
@@ -76,14 +81,8 @@ Dice.prototype.getScore = function () {
  * @returns {Element}
  */
 Dice.prototype.generateDice = function () {
-  var diceLi = document.createElement("li");
-  diceLi.classList.add("dice");
-
-  this.m_className = Dice.m_sides[this.m_amount]
-  diceLi.classList.add(this.m_className);
-
-  this.m_element = diceLi;
-
+  this.m_element = document.createElement("li");
+  this.m_element.className = "dice " + Dice.m_sides[this.amount];
   return this.m_element;
 }
 
@@ -94,7 +93,8 @@ Dice.prototype.generateDice = function () {
  * @returns {undefined}
  */
 Dice.prototype.roll = function () {
-  this.m_amount = Math.floor(Math.random() * 6) + 1;
+  this.amount = Math.floor(Math.random() * 6) + 1;
+  this.m_element.className = "dice " + Dice.m_sides[this.amount];
 }
 
 /**
@@ -104,5 +104,18 @@ Dice.prototype.roll = function () {
  * @returns {undefined}
  */
 Dice.prototype.delete = function () {
-  this.m_element.remove();
+  if (this.m_element) {
+    this.m_element.remove();
+    this.m_element = null;
+  }
+}
+
+/**
+ * Second constructor.
+ * 
+ * @private
+ * @returns {undefined}
+ */
+Dice.prototype.m_construct = function () {
+  this.roll = this.roll.bind(this);
 }

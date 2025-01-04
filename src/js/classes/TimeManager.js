@@ -15,6 +15,18 @@ var TimeManager = (function () {
    */
   function TimeManager() {
     //--------------------------------------------------------------------------
+    // Public properties
+    //--------------------------------------------------------------------------
+
+    /**
+     * Object with current time as strings.
+     * 
+     * @public
+     * @type {Object}
+     */
+    this.timeAsStrings;
+
+    //--------------------------------------------------------------------------
     // Private properties
     //--------------------------------------------------------------------------
 
@@ -25,15 +37,6 @@ var TimeManager = (function () {
      * @type {Array}
      */
     this.m_subscribers = [];
-
-    /**
-     * Object with current time as strings.
-     * 
-     * @private
-     * @type {Object}
-     */
-    this.m_timeAsStrings;
-
 
     //--------------------------------------------------------------------------
     // Constructor call
@@ -65,8 +68,6 @@ var TimeManager = (function () {
     if (index !== -1) {
       this.m_subscribers.splice(index, 1);
     }
-
-    console.log(this.m_subscribers);
   }
 
   //--------------------------------------------------------------------------
@@ -92,7 +93,7 @@ var TimeManager = (function () {
    */
   TimeManager.prototype.m_updateTime = function () {
     var now = new Date();
-    this.m_timeAsStrings = {
+    this.timeAsStrings = {
       hour: now.getHours().toString().padStart(2, "0"),
       minutes: now.getMinutes().toString().padStart(2, "0"),
       seconds: now.getSeconds().toString().padStart(2, "0"),

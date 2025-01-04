@@ -18,7 +18,7 @@ function CustomWindow() {
   //--------------------------------------------------------------------------
 
   /**
-   * The window object
+   * The window Dom-Element
    * 
    * @protected
    * @type {Element}
@@ -69,13 +69,17 @@ CustomWindow.prototype.appendTo = function (parent) {
  * @returns {undefined}
  */
 CustomWindow.prototype.closeWindow = function () {
+  this.m_element.remove();
+
   if (this.dispose) {
     this.dispose();
   }
 
-  this.m_closeBtn.removeEventListener("click", this.closeWindow);
-  this.m_element.remove();
-  this.m_dragHandler.dispose();
+  for (var prop in this) {
+    if (this.hasOwnProperty(prop)) {
+      this[prop] = null;
+    }
+  }
 }
 
 //--------------------------------------------------------------------------

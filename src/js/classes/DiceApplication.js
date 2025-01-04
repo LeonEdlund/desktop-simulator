@@ -98,9 +98,6 @@ DiceApplication.prototype.dispose = function () {
   this.m_allDice.forEach(function (dice) {
     dice.delete();
   });
-  this.m_counter = null;
-  this.m_diceContainer = null;
-  console.log("disposed");
 }
 
 //--------------------------------------------------------------------------
@@ -114,9 +111,11 @@ DiceApplication.prototype.dispose = function () {
  * @returns {undefined}
  */
 DiceApplication.prototype.m_construct = function () {
+  // Create main window
   this.m_createWindow("dice-window-wrapper", "dice-menubar-wrapper");
-  var toolbar = this.m_addToolbar();
-  this.m_addElement(toolbar);
+
+  // Append elements to window
+  this.m_addElement(this.m_createToolbar());
   this.m_addElement(this.m_createDiceContainer());
 }
 
@@ -126,7 +125,7 @@ DiceApplication.prototype.m_construct = function () {
  * @private
  * @returns {Element}
  */
-DiceApplication.prototype.m_addToolbar = function () {
+DiceApplication.prototype.m_createToolbar = function () {
   // Create elements
   var toolbar = document.createElement("div");
   var toolbarUl = document.createElement("ul");
@@ -169,9 +168,9 @@ DiceApplication.prototype.m_addToolbar = function () {
  * @returns {undefined}
  */
 DiceApplication.prototype.m_addToolbarListeners = function (addBtn, removeBtn, rollBtn) {
-  addBtn.addEventListener("click", this._insertDice.bind(this));
-  removeBtn.addEventListener("click", this._removeDice.bind(this));
-  rollBtn.addEventListener("click", this._rollAllDice.bind(this));
+  addBtn.addEventListener("click", this.m_insertDice.bind(this));
+  removeBtn.addEventListener("click", this.m_removeLastDice.bind(this));
+  rollBtn.addEventListener("click", this.m_rollAllDice.bind(this));
 }
 
 
@@ -188,7 +187,8 @@ DiceApplication.prototype.m_createDiceContainer = function () {
   diceContainer.classList.add("dice-content-wrapper");
   diceContainer.appendChild(diceUl);
 
-  this.m_diceContainer = diceUl
+  this.m_diceContainer = diceUl;
+
   return diceContainer;
 }
 
@@ -198,39 +198,22 @@ DiceApplication.prototype.m_createDiceContainer = function () {
  * @private
  * @returns {undefined}
  */
-DiceApplication.prototype._insertDice = function () {
+DiceApplication.prototype.m_insertDice = function () {
   if (this.m_allDice.length >= this.m_maxDice) return;
-  // Create dice and Dom element
+
   var dice = new Dice();
   var domDice = dice.generateDice();
-  this.m_addDiceListener(dice, domDice);
+
+  domDice.addEventListener("click", function () {
+    dice.roll();
+    this.m_countScore();
+  }.bind(this));
 
   this.m_allDice.push(dice);
   this.m_diceContainer.appendChild(domDice);
 
-  DiceApplication.m_audio.play();
-  this._countScore();
-}
-
-/**
- * Adds eventListeners too the dice to reroll dice.
- * 
- * @private
- * @returns {undefined}
- */
-DiceApplication.prototype.m_addDiceListener = function (dice, domDice) {
-  var self = this;
-
-  domDice.addEventListener("click", function () {
-    dice.roll();
-    var newDice = dice.generateDice();
-
-    self.m_addDiceListener(dice, newDice);
-    self.m_diceContainer.replaceChild(newDice, domDice);
-
-    DiceApplication.m_audio.play();
-    self._countScore();
-  });
+  this.m_playSound();
+  this.m_countScore();
 }
 
 /**
@@ -239,12 +222,14 @@ DiceApplication.prototype.m_addDiceListener = function (dice, domDice) {
  * @private
  * @returns {undefined}
  */
-DiceApplication.prototype._removeDice = function () {
+DiceApplication.prototype.m_removeLastDice = function () {
   if (this.m_allDice.length <= 0) return;
+
   var removedDice = this.m_allDice.pop();
   removedDice.delete();
-  this._countScore();
-  DiceApplication.m_audio.play();
+
+  this.m_countScore();
+  this.m_playSound();
 }
 
 /**
@@ -253,19 +238,15 @@ DiceApplication.prototype._removeDice = function () {
  * @private
  * @returns {undefined}
  */
-DiceApplication.prototype._rollAllDice = function () {
+DiceApplication.prototype.m_rollAllDice = function () {
   if (this.m_allDice.length <= 0) return;
 
-  var self = this;
-  var nrOfDice = this.m_allDice.length;
-  this.m_allDice = [];
+  this.m_allDice.forEach(function (dice) {
+    dice.roll();
+  });
 
-  DiceApplication.m_audio.play();
-
-  self.m_diceContainer.innerHTML = "";
-  for (var i = 0; i < nrOfDice; i++) {
-    self._insertDice();
-  }
+  this.m_countScore();
+  this.m_playSound();
 }
 
 /**
@@ -274,10 +255,22 @@ DiceApplication.prototype._rollAllDice = function () {
  * @private
  * @returns {undefined}
  */
-DiceApplication.prototype._countScore = function () {
+DiceApplication.prototype.m_countScore = function () {
   var score = 0;
+
   this.m_allDice.forEach(function (dice) {
     score += dice.getScore();
   });
+
   this.m_counter.updateCounter(score);
+}
+
+/**
+ * Plays sound.
+ * 
+ * @private
+ * @returns {undefined}
+ */
+DiceApplication.prototype.m_playSound = function () {
+  DiceApplication.m_audio.play();
 }

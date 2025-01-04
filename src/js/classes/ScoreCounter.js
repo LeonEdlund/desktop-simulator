@@ -13,7 +13,7 @@ function ScoreCounter() {
   //--------------------------------------------------------------------------
 
   /**
-   * Outer counter Dom elements.
+   * Outer counter Dom element.
    * 
    * @public
    * @type {Element}
