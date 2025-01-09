@@ -1,11 +1,10 @@
-//--------------------------------------------------------------------------
-// Constructor scope
-//--------------------------------------------------------------------------
-
 /**
+ * Creates a new instance of a dice.
+ * 
  * @class
- * @classdesc - Represents a dice
- * @constructor - Creates a dice
+ * @classdesc - Represents a dice.
+ * 
+ * @constructor
  */
 function Dice() {
   //--------------------------------------------------------------------------
@@ -38,7 +37,6 @@ function Dice() {
   this.m_construct();
 }
 
-
 //--------------------------------------------------------------------------
 // Private static properties
 //--------------------------------------------------------------------------
@@ -49,14 +47,14 @@ function Dice() {
  * @type {Object}
  * @private
  */
-Dice.m_sides = {
-  1: "dice-side-one",
-  2: "dice-side-two",
-  3: "dice-side-three",
-  4: "dice-side-four",
-  5: "dice-side-five",
-  6: "dice-side-six",
-}
+Dice.prototype.m_sides = [
+  "dice-side-one",
+  "dice-side-two",
+  "dice-side-three",
+  "dice-side-four",
+  "dice-side-five",
+  "dice-side-six",
+]
 
 //--------------------------------------------------------------------------
 // Public getter and setter methods
@@ -82,7 +80,7 @@ Dice.prototype.getScore = function () {
  */
 Dice.prototype.generateDice = function () {
   this.m_element = document.createElement("li");
-  this.m_element.className = "dice " + Dice.m_sides[this.amount];
+  this.m_element.className = "dice " + this.m_sides[this.amount];
   return this.m_element;
 }
 
@@ -94,7 +92,7 @@ Dice.prototype.generateDice = function () {
  */
 Dice.prototype.roll = function () {
   this.amount = Math.floor(Math.random() * 6) + 1;
-  this.m_element.className = "dice " + Dice.m_sides[this.amount];
+  this.m_element.className = "dice " + this.m_sides[this.amount];
 }
 
 /**

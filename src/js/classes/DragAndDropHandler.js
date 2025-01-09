@@ -1,11 +1,7 @@
-//--------------------------------------------------------------------------
-// Constructor scope 
-//--------------------------------------------------------------------------
-
 /**
  * @class
  * @classdesc - Represents a DragAndDropHandler.
- * @constructor - Creates a Drag and Drop handler.
+ * @constructor
  * 
  * @param {Element} element - 
  * @param {Element} grabHandle - 
@@ -81,7 +77,7 @@ function DragAndDropHandler(element, grabHandle, options) {
 //--------------------------------------------------------------------------
 
 /**
- * zIndex for the draggable element  
+ * zIndex for the draggable element.  
  * @static
  * @private
  * @type {number}
@@ -99,6 +95,12 @@ DragAndDropHandler.zIndex = 1;
  */
 DragAndDropHandler.prototype.dispose = function () {
   this.m_grabHandle.removeEventListener("mousedown", this.m_dragStart);
+  // set all properties to null.
+  for (var prop in this) {
+    if (this.hasOwnProperty(prop)) {
+      this[prop] = null;
+    }
+  }
 }
 
 

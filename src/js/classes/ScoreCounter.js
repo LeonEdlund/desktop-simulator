@@ -1,11 +1,10 @@
-//--------------------------------------------------------------------------
-// Constructor scope
-//--------------------------------------------------------------------------
-
 /**
+ * 
+ * 
  * @class
  * @classdesc - Represents a score counter.
- * @constructor - Creates a score counter.
+ * 
+ * @constructor
  */
 function ScoreCounter() {
   //--------------------------------------------------------------------------
@@ -13,7 +12,7 @@ function ScoreCounter() {
   //--------------------------------------------------------------------------
 
   /**
-   * Outer counter Dom element.
+   * Outer counter ul element.
    * 
    * @public
    * @type {Element}
@@ -23,14 +22,6 @@ function ScoreCounter() {
   //--------------------------------------------------------------------------
   // Private properties
   //--------------------------------------------------------------------------
-
-  /**
-   * inner counter Dom elements.
-   * 
-   * @private
-   * @type {Element}
-   */
-  this.m_counterLi = document.createElement("li");
 
   /**
    * Array with Dom elements for individual numbers.
@@ -56,17 +47,16 @@ function ScoreCounter() {
 }
 
 //--------------------------------------------------------------------------
-// Static properties
+// Private prototype properties
 //--------------------------------------------------------------------------
 
 /**
  * Array with CSS classnames for individual numbers
  * 
- * @static
  * @private
  * @type {Array}
  */
-ScoreCounter.m_classNames = [
+ScoreCounter.prototype.m_classNames = [
   "zero",
   "one",
   "two",
@@ -85,7 +75,7 @@ ScoreCounter.m_classNames = [
 //--------------------------------------------------------------------------
 
 /**
- * Returns the Counter DOM element.
+ * Returns the Counter HTML-element.
  * 
  * @public
  * @returns {Element}
@@ -110,19 +100,8 @@ ScoreCounter.prototype.updateCounter = function (score) {
   var scoreAsStr = score.toString().padStart(5, "0");
 
   for (var i = 0; i < scoreAsStr.length; i++) {
-    self.m_numbers[i].className = ScoreCounter.m_classNames[parseInt(scoreAsStr[i], 10)];
+    self.m_numbers[i].className = this.m_classNames[parseInt(scoreAsStr[i], 10)];
   }
-}
-
-/**
- * Places the counter in the DOM.
- * 
- * @public
- * @param {HTMLElement} parent - The dom element that the counter should be appended too.  
- * @returns {undefined}
- */
-ScoreCounter.prototype.appendTo = function (parent) {
-  parent.appendChild(this.element);
 }
 
 //--------------------------------------------------------------------------
@@ -137,12 +116,10 @@ ScoreCounter.prototype.appendTo = function (parent) {
  */
 ScoreCounter.prototype.m_construct = function () {
   var self = this;
+  this.element.className = "dice-toolbar-counter-wrapper";
 
-  this.m_counterLi.className = "dice-toolbar-counter-wrapper";
-
+  // append numbers to counter ul-element.
   this.m_numbers.forEach(function (number) {
-    self.m_counterLi.appendChild(number);
+    self.element.appendChild(number);
   });
-
-  this.element.appendChild(this.m_counterLi);
 }

@@ -1,14 +1,12 @@
-//--------------------------------------------------------------------------
-// Constructor scope
-//--------------------------------------------------------------------------
-
 /**
  * @class
  * @abstract
- * @classdesc
- * @constructor - Creates a Window
+ * @classdesc Abstract class representing a custom window.
+ * 
+ * @constructor
+ * @param {Function} closeCallback - Optional callback function to be called when the window is closed.
  */
-function CustomWindow() {
+function CustomWindow(closeCallback) {
   if (this.constructor === CustomWindow) {
     throw ("Window is an abstract class.");
   }
@@ -38,6 +36,14 @@ function CustomWindow() {
   this.m_closeBtn;
 
   /**
+   * Callback function for closing window.
+   * 
+   * @private
+   * @type {Function}
+   */
+  this.m_onClose = closeCallback;
+
+  /**
    * The drag and drop handler
    * 
    * @private
@@ -63,18 +69,27 @@ CustomWindow.prototype.appendTo = function (parent) {
 }
 
 /**
- * Removes window from DOM.
+ * Removes window from DOM and disposes resources.
  * 
  * @public
  * @returns {undefined}
  */
 CustomWindow.prototype.closeWindow = function () {
+  this.m_closeBtn.removeEventListener("click", this.closeWindow);
+  this.m_dragHandler.dispose();
   this.m_element.remove();
 
+  // call close callback function.
+  if (this.m_onClose) {
+    this.m_onClose(this);
+  }
+
+  // Run dispose method in child classes if the exist.
   if (this.dispose) {
     this.dispose();
   }
 
+  // set all properties to null.
   for (var prop in this) {
     if (this.hasOwnProperty(prop)) {
       this[prop] = null;
@@ -87,11 +102,11 @@ CustomWindow.prototype.closeWindow = function () {
 //--------------------------------------------------------------------------
 
 /**
- * creates the structure of the dice window.
+ * creates the base structure of the dice window.
  * 
  * @protected
- * @param {string} windowClass - The type of window that should be created, clock or dice. 
- * @param {string} menuClass - The type of window that should be created, clock or dice. 
+ * @param {string} windowClass - The CSS class of the window wrapper.
+ * @param {string} menuClass - The CSS class of the menu wrapper.
  * @returns {undefined}
  */
 CustomWindow.prototype.m_createWindow = function (windowClass, menuClass) {

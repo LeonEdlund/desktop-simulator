@@ -34,6 +34,14 @@ function Main() {
    * @type {Element}
    */
   this.m_desktop = document.getElementById("page-content-wrapper");
+
+  /**
+   * Array with all open windows
+   * 
+   * @private
+   * @type {Array}
+   */
+  this.m_openWindows = [];
 }
 
 //--------------------------------------------------------------------------
@@ -62,8 +70,10 @@ Main.prototype.start = function () {
  * @returns {undefined} 
  */
 Main.prototype.m_openDiceWindow = function () {
-  var diceWindow = new DiceApplication(40, new ScoreCounter());
+  var diceWindow = new DiceApplication(40, new ScoreCounter(), this.m_onClosedWindow.bind(this));
+
   diceWindow.appendTo(this.m_desktop);
+  this.m_openWindows.push(diceWindow);
 }
 
 /**
@@ -73,8 +83,23 @@ Main.prototype.m_openDiceWindow = function () {
  * @returns {undefined} 
  */
 Main.prototype.m_openClockWindow = function () {
-  var clockWindow = new ClockApplication(TimeManager.getInstance());
+  var clockWindow = new ClockApplication(TimeManager.getInstance(), this.m_onClosedWindow.bind(this));
+
   clockWindow.appendTo(this.m_desktop);
+  this.m_openWindows.push(clockWindow);
+}
+
+/**
+ * Removes a closed window from array with all windows.
+ * 
+ * @private
+ * @returns {undefined} 
+ */
+Main.prototype.m_onClosedWindow = function (window) {
+  var index = this.m_openWindows.indexOf(window);
+  if (index !== -1) {
+    this.m_openWindows.splice(index, 1);
+  }
 }
 
 /** 

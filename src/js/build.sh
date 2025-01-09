@@ -9,6 +9,6 @@ npx google-closure-compiler \
 --js=classes/DiceApplication.js \
 --js=classes/TimeManager.js \
 --js=classes/ClockApplication.js \
---js=classes/handlers/DragAndDropHandler.js \
+--js=classes/DragAndDropHandler.js \
 --js=Main.js \
 --js_output_file=out.js

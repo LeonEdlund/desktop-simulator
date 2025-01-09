@@ -1,7 +1,3 @@
-//--------------------------------------------------------------------------
-// Constructor scope
-//--------------------------------------------------------------------------
-
 /**
  * Creates a new instance of a dice application.
  * 
@@ -12,8 +8,9 @@
  * @constructor
  * @param {number} maxDice - The max number of dice for the application.
  * @param {ScoreCounter} counter - The score counter object.
+ * @param {Function} closeCallback - Optional callback function to be called when the window is closed.
  */
-function DiceApplication(maxDice, counter) {
+function DiceApplication(maxDice, counter, closeCallback) {
   //--------------------------------------------------------------------------
   // Super call
   //--------------------------------------------------------------------------
@@ -21,7 +18,7 @@ function DiceApplication(maxDice, counter) {
   /**
    * Extends UiWindow.
    */
-  CustomWindow.call(this);
+  CustomWindow.call(this, closeCallback);
 
   //--------------------------------------------------------------------------
   // Private properties
@@ -77,7 +74,7 @@ DiceApplication.prototype = Object.create(CustomWindow.prototype);
 DiceApplication.prototype.constructor = DiceApplication;
 
 //--------------------------------------------------------------------------
-// Static properties
+// Private prototype properties
 //--------------------------------------------------------------------------
 
 /**
@@ -87,7 +84,7 @@ DiceApplication.prototype.constructor = DiceApplication;
  * @private
  * @type {Audio}
  */
-DiceApplication.m_audio = new Audio("/src/wav/add.wav");
+DiceApplication.prototype.m_audio = new Audio("/src/wav/add.wav");
 
 
 //--------------------------------------------------------------------------
@@ -98,6 +95,8 @@ DiceApplication.prototype.dispose = function () {
   this.m_allDice.forEach(function (dice) {
     dice.delete();
   });
+
+  this.m_allDice = [];
 }
 
 //--------------------------------------------------------------------------
@@ -272,5 +271,5 @@ DiceApplication.prototype.m_countScore = function () {
  * @returns {undefined}
  */
 DiceApplication.prototype.m_playSound = function () {
-  DiceApplication.m_audio.play();
+  this.m_audio.play();
 }

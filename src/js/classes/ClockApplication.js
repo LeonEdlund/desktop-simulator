@@ -1,7 +1,3 @@
-//--------------------------------------------------------------------------
-// Constructor scope
-//--------------------------------------------------------------------------
-
 /**
  * Creates a new instance of a dice application.
  * 
@@ -11,8 +7,9 @@
  * 
  * @constructor
  * @param {TimeManager} timeManager - global time.
+ * @param {Function} closeCallback - Optional callback function to be called when the window is closed.
  */
-function ClockApplication(timeManager) {
+function ClockApplication(timeManager, closeCallback) {
   //--------------------------------------------------------------------------
   // Super call
   //--------------------------------------------------------------------------
@@ -20,7 +17,7 @@ function ClockApplication(timeManager) {
   /**
    * Extends UiWindow.
    */
-  CustomWindow.call(this);
+  CustomWindow.call(this, closeCallback);
 
   //--------------------------------------------------------------------------
   // Private properties
