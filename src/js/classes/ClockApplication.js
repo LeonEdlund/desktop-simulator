@@ -3,13 +3,12 @@
  * 
  * @class
  * @extends {CustomWindow}
- * @classdesc - ...
+ * @classdesc - Represents a clock application.
  * 
  * @constructor
- * @param {TimeManager} timeManager - global time.
- * @param {Function} closeCallback - Optional callback function to be called when the window is closed.
+ * @param {TimeManager} timeManager - A singleton object handling the global time and rendering of clocks.
  */
-function ClockApplication(timeManager, closeCallback) {
+function ClockApplication(timeManager) {
   //--------------------------------------------------------------------------
   // Super call
   //--------------------------------------------------------------------------
@@ -17,35 +16,30 @@ function ClockApplication(timeManager, closeCallback) {
   /**
    * Extends UiWindow.
    */
-  CustomWindow.call(this, closeCallback);
+  CustomWindow.call(this);
 
   //--------------------------------------------------------------------------
   // Private properties
   //--------------------------------------------------------------------------
 
   /**
-   * ...
+   * A singleton object handling the global time and rendering of clocks.
+   * 
    * @private
    * @type {TimeManager}
    */
   this.m_timeManager = timeManager;
 
   /**
-   * ...
-   * @private
-   * @type {Element}
-   */
-  this.m_clockContainer = document.createElement("div");
-
-  /**
-   * ...
+   * Holds the ul elements that has the individual digits.
+   * 
    * @private
    * @type {Object}
    */
   this.m_digits = {
-    hour: this._createDigits("hour"),
-    minutes: this._createDigits("minute"),
-    seconds: this._createDigits("second"),
+    hour: this.m_createDigits("hour"),
+    minutes: this.m_createDigits("minute"),
+    seconds: this.m_createDigits("second"),
   }
 
   //--------------------------------------------------------------------------
@@ -56,7 +50,6 @@ function ClockApplication(timeManager, closeCallback) {
    * Invoke secondary constructor
    */
   this.m_construct();
-
 }
 
 //--------------------------------------------------------------------------
@@ -71,24 +64,21 @@ ClockApplication.prototype.constructor = ClockApplication;
 //--------------------------------------------------------------------------
 
 /**
- * ...
+ * Get's the current time as strings from timeManager and updates the css classes for the digits.
  * 
  * @public
  * @returns {undefined}
  */
 ClockApplication.prototype.renderClock = function () {
   var time = this.m_timeManager.timeAsStrings;
-  var hour = time.hour;
-  var minutes = time.minutes;
-  var seconds = time.seconds;
 
-  this._updateDigits(this.m_digits.hour, hour[0], hour[1]);
-  this._updateDigits(this.m_digits.minutes, minutes[0], minutes[1]);
-  this._updateDigits(this.m_digits.seconds, seconds[0], seconds[1]);
+  this.m_updateDigits(this.m_digits.hour, time.hour);
+  this.m_updateDigits(this.m_digits.minutes, time.minutes);
+  this.m_updateDigits(this.m_digits.seconds, time.seconds);
 }
 
 /**
- * Dispose resources
+ * Dispose resources by unsubscribing from TimeManager.
  * 
  * @public
  * @returns {undefined}
@@ -110,28 +100,30 @@ ClockApplication.prototype.dispose = function () {
 ClockApplication.prototype.m_construct = function () {
   this.m_createWindow("clock-window-wrapper", "clock-menubar-wrapper");
 
-  this.m_clockContainer.className = "clock-content-wrapper";
+  var clockContainer = document.createElement("div");
+  clockContainer.className = "clock-content-wrapper";
 
-  this.m_clockContainer.appendChild(this.m_digits.hour);
-  this.m_clockContainer.appendChild(this.m_digits.minutes);
-  this.m_clockContainer.appendChild(this.m_digits.seconds);
+  clockContainer.appendChild(this.m_digits.hour);
+  clockContainer.appendChild(this.m_digits.minutes);
+  clockContainer.appendChild(this.m_digits.seconds);
 
   // parent call
-  this.m_addElement(this.m_clockContainer);
+  this.m_addElement(clockContainer);
 
+  // Subscribe to timeManager
   this.boundCallback = this.renderClock.bind(this);
   this.m_timeManager.subscribe(this.boundCallback);
 }
 
 /**
- * ...
+ * Creates a ul Element with two digits as li elements.
  * 
  * @private
  * 
- * @param {string} unitClass - ...
+ * @param {string} unitClass - The css class for the different units of time.
  * @returns {Element}
  */
-ClockApplication.prototype._createDigits = function (unitClass) {
+ClockApplication.prototype.m_createDigits = function (unitClass) {
   var ul = document.createElement("ul");
   var digitOne = document.createElement("li");
   var digitTwo = document.createElement("li");
@@ -146,34 +138,17 @@ ClockApplication.prototype._createDigits = function (unitClass) {
   return ul;
 }
 
-
 /**
- * ...
+ * Updates the individual digits.
  * 
  * @private
  * 
- * @param {HTMLElement} element - ...
- * @param {number} digitOne - ...
- * @param {number} digitTwo - ...
+ * @param {HTMLElement} element - The Ul element holding the li digits for a specific time unit. 
+ * @param {string} time - The time based on the unit as a string.
  * 
  * @returns {undefined}
  */
-ClockApplication.prototype._updateDigits = function (element, digitOne, digitTwo) {
-  var digits = element.querySelectorAll("li");
-  digits[0].className = this._getNumberClass(parseInt(digitOne, 10));
-  digits[1].className = this._getNumberClass(parseInt(digitTwo, 10));
-}
-
-/**
- * ...
- * 
- * @private
- * 
- * @param {number} number - ...
- * 
- * @returns {string}
- */
-ClockApplication.prototype._getNumberClass = function (number) {
+ClockApplication.prototype.m_updateDigits = function (element, time) {
   var classNames = [
     "clock-digit-zero",
     "clock-digit-one",
@@ -186,5 +161,8 @@ ClockApplication.prototype._getNumberClass = function (number) {
     "clock-digit-eight",
     "clock-digit-nine"
   ];
-  return classNames[number];
+
+  var digits = element.querySelectorAll("li");
+  digits[0].className = classNames[parseInt(time[0], 10)];
+  digits[1].className = classNames[parseInt(time[1], 10)];
 }

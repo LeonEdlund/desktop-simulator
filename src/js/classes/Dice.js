@@ -8,26 +8,22 @@
  */
 function Dice() {
   //--------------------------------------------------------------------------
-  // Public properties
+  // Private properties
   //--------------------------------------------------------------------------
 
   /**
    * The dice score.
    * 
+   * @private
    * @type {number}
-   * @public
    */
-  this.amount = Math.floor(Math.random() * 6) + 1;
-
-  //--------------------------------------------------------------------------
-  // Private properties
-  //--------------------------------------------------------------------------
+  this.m_amount = Math.floor(Math.random() * 6) + 1;
 
   /**
    * The dice dom element.
    * 
-   * @type {Element}
    * @private
+   * @type {Element}
    */
   this.m_element = null;
 
@@ -44,8 +40,8 @@ function Dice() {
 /**
  * The css class names for the sides of the dice.
  * 
- * @type {Object}
  * @private
+ * @type {Object}
  */
 Dice.prototype.m_sides = [
   "dice-side-one",
@@ -65,7 +61,7 @@ Dice.prototype.m_sides = [
  * @returns {number}
  */
 Dice.prototype.getScore = function () {
-  return this.amount;
+  return this.m_amount;
 }
 
 //--------------------------------------------------------------------------
@@ -80,7 +76,7 @@ Dice.prototype.getScore = function () {
  */
 Dice.prototype.generateDice = function () {
   this.m_element = document.createElement("li");
-  this.m_element.className = "dice " + this.m_sides[this.amount];
+  this.m_element.className = "dice " + this.m_sides[this.m_amount - 1];
   return this.m_element;
 }
 
@@ -91,8 +87,8 @@ Dice.prototype.generateDice = function () {
  * @returns {undefined}
  */
 Dice.prototype.roll = function () {
-  this.amount = Math.floor(Math.random() * 6) + 1;
-  this.m_element.className = "dice " + this.m_sides[this.amount];
+  this.m_amount = Math.floor(Math.random() * 6) + 1;
+  this.m_element.className = "dice " + this.m_sides[this.m_amount - 1];
 }
 
 /**
@@ -107,6 +103,10 @@ Dice.prototype.delete = function () {
     this.m_element = null;
   }
 }
+
+//--------------------------------------------------------------------------
+// Private methods
+//--------------------------------------------------------------------------
 
 /**
  * Second constructor.

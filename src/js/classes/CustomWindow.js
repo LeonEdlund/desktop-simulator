@@ -4,9 +4,8 @@
  * @classdesc Abstract class representing a custom window.
  * 
  * @constructor
- * @param {Function} closeCallback - Optional callback function to be called when the window is closed.
  */
-function CustomWindow(closeCallback) {
+function CustomWindow() {
   if (this.constructor === CustomWindow) {
     throw ("Window is an abstract class.");
   }
@@ -36,21 +35,34 @@ function CustomWindow(closeCallback) {
   this.m_closeBtn;
 
   /**
-   * Callback function for closing window.
+   * The menubar used for drag and drop.
    * 
    * @private
-   * @type {Function}
+   * @type {Element}
    */
-  this.m_onClose = closeCallback;
+  this.m_menubar;
 
   /**
-   * The drag and drop handler
+   * Object storing values for drag and drop.
    * 
    * @private
-   * @type {DragAndDropHandler}
+   * @type {Object}
    */
-  this.m_dragHandler;
+  this.m_dragDropValues = {
+    nonTransparentValue: 1,
+    transparentValue: 0.5,
+    offsetX: 0,
+    offsetY: 0
+  }
+
+  this.m_init();
 }
+
+//--------------------------------------------------------------------------
+// Static properties
+//--------------------------------------------------------------------------
+
+CustomWindow.zIndex = 1;
 
 //--------------------------------------------------------------------------
 // Public prototype methods
@@ -76,13 +88,8 @@ CustomWindow.prototype.appendTo = function (parent) {
  */
 CustomWindow.prototype.closeWindow = function () {
   this.m_closeBtn.removeEventListener("click", this.closeWindow);
-  this.m_dragHandler.dispose();
+  this.m_menubar.removeEventListener("mousedown", this.m_dragStart);
   this.m_element.remove();
-
-  // call close callback function.
-  if (this.m_onClose) {
-    this.m_onClose(this);
-  }
 
   // Run dispose method in child classes if the exist.
   if (this.dispose) {
@@ -122,8 +129,9 @@ CustomWindow.prototype.m_createWindow = function (windowClass, menuClass) {
   windowWrapper.appendChild(menuWrapper);
 
   this.m_element = windowWrapper;
+  this.m_menubar = menuWrapper;
   this.m_closeBtn = close;
-  this.m_addListeners(menuWrapper);
+  this.m_addListeners();
 }
 
 /**
@@ -141,16 +149,68 @@ CustomWindow.prototype.m_addElement = function (element) {
 // Private prototype methods
 //--------------------------------------------------------------------------
 
+CustomWindow.prototype.m_init = function () {
+  this.m_dragStart = this.m_dragStart.bind(this);
+  this.closeWindow = this.closeWindow.bind(this);
+  this.m_mouseMove = this.m_mouseMove.bind(this);
+  this.m_mouseUp = this.m_mouseUp.bind(this);
+}
+
 /**
  * Adds eventlistener to close button and drag and drop handler.
  * 
  * @private
- * @param {Element} menubar - The type of window that should be created, clock or dice. 
  * @returns {undefined}
  */
-CustomWindow.prototype.m_addListeners = function (menubar) {
-  this.closeWindow = this.closeWindow.bind(this);
-
+CustomWindow.prototype.m_addListeners = function () {
   this.m_closeBtn.addEventListener("click", this.closeWindow);
-  this.m_dragHandler = new DragAndDropHandler(this.m_element, menubar, { boundaryTop: 22 });
+  this.m_menubar.addEventListener("mousedown", this.m_dragStart);
+}
+
+/**
+ * ...
+ * @private
+ * @param {Event} event - ...
+ * @returns {undefined}
+ */
+CustomWindow.prototype.m_dragStart = function (event) {
+  if (event.target.className === "close") return;
+
+  CustomWindow.zIndex++;
+
+  this.m_dragDropValues.offsetX = event.offsetX;
+  this.m_dragDropValues.offsetY = event.offsetY;
+
+  this.m_element.style.opacity = this.m_dragDropValues.transparentValue;
+  this.m_element.style.zIndex = CustomWindow.zIndex;
+
+  document.addEventListener("mousemove", this.m_mouseMove);
+  document.addEventListener("mouseup", this.m_mouseUp);
+}
+
+/**
+ * ...
+ * @private
+ * @param {Event} event - ...
+ * @returns {undefined}
+ */
+CustomWindow.prototype.m_mouseMove = function (event) {
+  var left = Math.max((event.clientX - this.m_dragDropValues.offsetX), 0);
+  var top = Math.max((event.clientY - this.m_dragDropValues.offsetY), 22);
+
+  this.m_element.style.left = left + 'px';
+  this.m_element.style.top = top + 'px';
+}
+
+/**
+ * ...
+ * @private
+ * @param {Event} event - ...
+ * @returns {undefined}
+ */
+CustomWindow.prototype.m_mouseUp = function (event) {
+  this.m_element.style.opacity = this.m_dragDropValues.nonTransparentValue;
+
+  document.removeEventListener("mousemove", this.m_mouseMove);
+  document.removeEventListener("mouseup", this.m_mouseUp);
 }

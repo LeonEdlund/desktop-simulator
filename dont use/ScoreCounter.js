@@ -47,30 +47,6 @@ function ScoreCounter() {
 }
 
 //--------------------------------------------------------------------------
-// Private prototype properties
-//--------------------------------------------------------------------------
-
-/**
- * Array with CSS classnames for individual numbers
- * 
- * @private
- * @type {Array}
- */
-ScoreCounter.prototype.m_classNames = [
-  "zero",
-  "one",
-  "two",
-  "three",
-  "four",
-  "five",
-  "six",
-  "seven",
-  "eight",
-  "nine"
-];
-
-
-//--------------------------------------------------------------------------
 // Public getter and setter methods
 //--------------------------------------------------------------------------
 
@@ -97,10 +73,22 @@ ScoreCounter.prototype.getCounter = function () {
  */
 ScoreCounter.prototype.updateCounter = function (score) {
   var self = this;
+  var classNames = [
+    "zero",
+    "one",
+    "two",
+    "three",
+    "four",
+    "five",
+    "six",
+    "seven",
+    "eight",
+    "nine"
+  ];
   var scoreAsStr = score.toString().padStart(5, "0");
 
   for (var i = 0; i < scoreAsStr.length; i++) {
-    self.m_numbers[i].className = this.m_classNames[parseInt(scoreAsStr[i], 10)];
+    self.m_numbers[i].className = classNames[parseInt(scoreAsStr[i], 10)];
   }
 }
 

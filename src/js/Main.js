@@ -62,7 +62,7 @@ Main.prototype.start = function () {
  * @returns {undefined} 
  */
 Main.prototype.m_openDiceWindow = function () {
-  var diceWindow = new DiceApplication(40, new ScoreCounter());
+  var diceWindow = new DiceApplication(40);
   diceWindow.appendTo(this.m_desktop);
 }
 

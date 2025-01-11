@@ -6,6 +6,9 @@
  * @constructor
  */
 function TimeManager() {
+  if (TimeManager.m_instance) {
+    return TimeManager.m_instance;
+  }
   //--------------------------------------------------------------------------
   // Public properties
   //--------------------------------------------------------------------------
@@ -30,6 +33,8 @@ function TimeManager() {
    */
   this.m_subscribers = [];
 
+  this.m_interval;
+
   //--------------------------------------------------------------------------
   // Constructor call
   //--------------------------------------------------------------------------
@@ -48,7 +53,7 @@ function TimeManager() {
 * @returns {TimeManager}
 */
 TimeManager.getInstance = function () {
-  if (TimeManager.m_instance === undefined) {
+  if (!TimeManager.m_instance) {
     TimeManager.m_instance = new TimeManager();
   }
   return TimeManager.m_instance;
@@ -59,13 +64,16 @@ TimeManager.getInstance = function () {
 //--------------------------------------------------------------------------
 
 /**
- * Adds callback function to array.
+ * Adds callback function to array and sets update interval.
  * 
  * @param {Function} callback - A callback function to render the current time. 
  * @returns {undefined}
  */
 TimeManager.prototype.subscribe = function (callback) {
   this.m_subscribers.push(callback);
+  if (this.m_subscribers.length === 1) {
+    this.m_interval = setInterval(this.m_updateTime.bind(this), 1000);
+  }
   callback();
 }
 
@@ -73,6 +81,10 @@ TimeManager.prototype.unSubscribe = function (callback) {
   var index = this.m_subscribers.indexOf(callback);
   if (index !== -1) {
     this.m_subscribers.splice(index, 1);
+  }
+
+  if (this.m_subscribers.length === 0) {
+    this.m_dispose();
   }
 }
 
@@ -88,11 +100,10 @@ TimeManager.prototype.unSubscribe = function (callback) {
  */
 TimeManager.prototype.m_construct = function () {
   this.m_updateTime();
-  setInterval(this.m_updateTime.bind(this), 1000);
 }
 
 /**
- * ...
+ * Updates the time as string.
  * 
  * @private
  * @returns {undefined}
@@ -108,7 +119,7 @@ TimeManager.prototype.m_updateTime = function () {
 }
 
 /**
- * ...
+ * Calls all subscriber callback methods.
  * 
  * @private
  * @returns {undefined}
@@ -118,3 +129,14 @@ TimeManager.prototype.m_renderSubscribers = function () {
     callback();
   });
 }
+
+/**
+ * Disposes of resources.
+ * 
+ * @private
+ * @returns {undefined}
+ */
+TimeManager.prototype.m_dispose = function () {
+  clearInterval(this.m_interval);
+}
+
