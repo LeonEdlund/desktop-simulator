@@ -37,6 +37,19 @@ function Main() {
 }
 
 //--------------------------------------------------------------------------
+// Static properties
+//--------------------------------------------------------------------------
+
+/**
+ * Static array of all open windows.
+ * 
+ * @public
+ * @type {Array}
+ */
+Main.allWindows = [];
+
+
+//--------------------------------------------------------------------------
 // Public methods
 //--------------------------------------------------------------------------
 
@@ -62,7 +75,8 @@ Main.prototype.start = function () {
  * @returns {undefined} 
  */
 Main.prototype.m_openDiceWindow = function () {
-  var diceWindow = new DiceApplication(40);
+  var diceWindow = new DiceApplication(40, new ScoreCounter());
+  Main.allWindows.push(diceWindow);
   diceWindow.appendTo(this.m_desktop);
 }
 
@@ -74,6 +88,7 @@ Main.prototype.m_openDiceWindow = function () {
  */
 Main.prototype.m_openClockWindow = function () {
   var clockWindow = new ClockApplication(TimeManager.getInstance());
+  Main.allWindows.push(clockWindow);
   clockWindow.appendTo(this.m_desktop);
 }
 

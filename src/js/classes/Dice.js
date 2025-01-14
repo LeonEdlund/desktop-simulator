@@ -3,7 +3,6 @@
  * 
  * @class
  * @classdesc - Represents a dice.
- * 
  * @constructor
  */
 function Dice() {
@@ -12,61 +11,35 @@ function Dice() {
   //--------------------------------------------------------------------------
 
   /**
-   * The dice score.
-   * 
-   * @private
-   * @type {number}
-   */
-  this.m_amount = Math.floor(Math.random() * 6) + 1;
-
-  /**
    * The dice dom element.
    * 
    * @private
    * @type {Element}
    */
-  this.m_element = null;
+  this.m_element;
 
   /**
-   * Second constructor call.
+   * The dice score.
+   * 
+   * @private
+   * @type {number}
    */
-  this.m_construct();
+  this.m_amount;
+
 }
 
 //--------------------------------------------------------------------------
-// Private static properties
+// Public methods
 //--------------------------------------------------------------------------
 
 /**
- * The css class names for the sides of the dice.
- * 
- * @private
- * @type {Object}
- */
-Dice.prototype.m_sides = [
-  "dice-side-one",
-  "dice-side-two",
-  "dice-side-three",
-  "dice-side-four",
-  "dice-side-five",
-  "dice-side-six",
-]
-
-//--------------------------------------------------------------------------
-// Public getter and setter methods
-//--------------------------------------------------------------------------
-
-/**
+ * Returns the score of the dice.
  * 
  * @returns {number}
  */
 Dice.prototype.getScore = function () {
   return this.m_amount;
 }
-
-//--------------------------------------------------------------------------
-// Public methods
-//--------------------------------------------------------------------------
 
 /**
  * Creates a li element representing a dice.
@@ -76,7 +49,7 @@ Dice.prototype.getScore = function () {
  */
 Dice.prototype.generateDice = function () {
   this.m_element = document.createElement("li");
-  this.m_element.className = "dice " + this.m_sides[this.m_amount - 1];
+  this.roll();
   return this.m_element;
 }
 
@@ -87,8 +60,16 @@ Dice.prototype.generateDice = function () {
  * @returns {undefined}
  */
 Dice.prototype.roll = function () {
+  var sides = [
+    "dice-side-one",
+    "dice-side-two",
+    "dice-side-three",
+    "dice-side-four",
+    "dice-side-five",
+    "dice-side-six",
+  ]
   this.m_amount = Math.floor(Math.random() * 6) + 1;
-  this.m_element.className = "dice " + this.m_sides[this.m_amount - 1];
+  this.m_element.className = "dice " + sides[this.m_amount - 1];
 }
 
 /**
@@ -102,18 +83,4 @@ Dice.prototype.delete = function () {
     this.m_element.remove();
     this.m_element = null;
   }
-}
-
-//--------------------------------------------------------------------------
-// Private methods
-//--------------------------------------------------------------------------
-
-/**
- * Second constructor.
- * 
- * @private
- * @returns {undefined}
- */
-Dice.prototype.m_construct = function () {
-  this.roll = this.roll.bind(this);
 }

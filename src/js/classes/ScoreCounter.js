@@ -8,20 +8,16 @@
  */
 function ScoreCounter() {
   //--------------------------------------------------------------------------
-  // Public properties
+  // Private properties
   //--------------------------------------------------------------------------
 
   /**
    * Outer counter ul element.
    * 
-   * @public
+   * @private
    * @type {Element}
    */
-  this.element = document.createElement("ul");
-
-  //--------------------------------------------------------------------------
-  // Private properties
-  //--------------------------------------------------------------------------
+  this.m_element = document.createElement("ul");
 
   /**
    * Array with Dom elements for individual numbers.
@@ -57,7 +53,7 @@ function ScoreCounter() {
  * @returns {Element}
  */
 ScoreCounter.prototype.getCounter = function () {
-  return this.element;
+  return this.m_element;
 }
 
 //--------------------------------------------------------------------------
@@ -68,11 +64,15 @@ ScoreCounter.prototype.getCounter = function () {
  * Updates the CSS classname for each counter digit.
  * 
  * @public
- * @param {number} score - The score.  
+ * @param {number} score - The score that the counter should update to. Max 5 digits long.
  * @returns {undefined}
  */
 ScoreCounter.prototype.updateCounter = function (score) {
-  var self = this;
+  if (score.toString().length > this.m_numbers.length) {
+    throw ("The score is too big and can only be 5 digits long");
+  }
+
+  var scoreAsStr = score.toString().padStart(5, "0");
   var classNames = [
     "zero",
     "one",
@@ -85,11 +85,21 @@ ScoreCounter.prototype.updateCounter = function (score) {
     "eight",
     "nine"
   ];
-  var scoreAsStr = score.toString().padStart(5, "0");
 
   for (var i = 0; i < scoreAsStr.length; i++) {
-    self.m_numbers[i].className = classNames[parseInt(scoreAsStr[i], 10)];
+    this.m_numbers[i].className = classNames[parseInt(scoreAsStr[i], 10)];
   }
+}
+
+/**
+ * Removes resources.
+ * 
+ * @public
+ * @returns {undefined}
+ */
+ScoreCounter.prototype.dispose = function () {
+  this.m_element = null;
+  this.m_numbers = null;
 }
 
 //--------------------------------------------------------------------------
@@ -103,11 +113,10 @@ ScoreCounter.prototype.updateCounter = function (score) {
  * @return {undefined}
  */
 ScoreCounter.prototype.m_construct = function () {
-  var self = this;
-  this.element.className = "dice-toolbar-counter-wrapper";
+  this.m_element.className = "dice-toolbar-counter-wrapper";
 
   // append numbers to counter ul-element.
   this.m_numbers.forEach(function (number) {
-    self.element.appendChild(number);
-  });
+    this.m_element.appendChild(number);
+  }.bind(this));
 }

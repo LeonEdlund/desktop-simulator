@@ -4,6 +4,7 @@ npx google-closure-compiler \
 --warning_level VERBOSE \
 --output_wrapper "(function() {%output%})();" \
 --js=classes/CustomWindow.js \
+--js=classes/ScoreCounter.js \
 --js=classes/Dice.js \
 --js=classes/DiceApplication.js \
 --js=classes/TimeManager.js \

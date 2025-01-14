@@ -1,8 +1,7 @@
 /**
  * @class
  * @abstract
- * @classdesc Abstract class representing a custom window.
- * 
+ * @classdesc - Abstract class representing a custom window.
  * @constructor
  */
 function CustomWindow() {
@@ -54,15 +53,19 @@ function CustomWindow() {
     offsetX: 0,
     offsetY: 0
   }
-
-  this.m_init();
 }
 
 //--------------------------------------------------------------------------
 // Static properties
 //--------------------------------------------------------------------------
 
-CustomWindow.zIndex = 1;
+/**
+ * zIndex counter used to bring clicked window to front.
+ * 
+ * @static
+ * @private
+ */
+CustomWindow.m_zIndex = 1;
 
 //--------------------------------------------------------------------------
 // Public prototype methods
@@ -72,7 +75,6 @@ CustomWindow.zIndex = 1;
  * Appends window.
  * 
  * @public
- * 
  * @param {Element} parent - The element the window should be added too.
  * @returns {undefined}
  */
@@ -102,11 +104,32 @@ CustomWindow.prototype.closeWindow = function () {
       this[prop] = null;
     }
   }
+
+  // Remove window from array if alla windows
+  if (Main.allWindows) {
+    var i = Main.allWindows.indexOf(this);
+    if (i !== -1) {
+      Main.allWindows.splice(i, 1);
+    }
+  }
 }
 
 //--------------------------------------------------------------------------
 // Protected prototype methods
 //--------------------------------------------------------------------------
+
+/**
+ * Secondary constructor.
+ * 
+ * @protected
+ * @returns {undefined}
+ */
+CustomWindow.prototype.m_construct = function () {
+  this.m_dragStart = this.m_dragStart.bind(this);
+  this.closeWindow = this.closeWindow.bind(this);
+  this.m_mouseMove = this.m_mouseMove.bind(this);
+  this.m_mouseUp = this.m_mouseUp.bind(this);
+}
 
 /**
  * creates the base structure of the dice window.
@@ -131,6 +154,7 @@ CustomWindow.prototype.m_createWindow = function (windowClass, menuClass) {
   this.m_element = windowWrapper;
   this.m_menubar = menuWrapper;
   this.m_closeBtn = close;
+
   this.m_addListeners();
 }
 
@@ -149,17 +173,10 @@ CustomWindow.prototype.m_addElement = function (element) {
 // Private prototype methods
 //--------------------------------------------------------------------------
 
-CustomWindow.prototype.m_init = function () {
-  this.m_dragStart = this.m_dragStart.bind(this);
-  this.closeWindow = this.closeWindow.bind(this);
-  this.m_mouseMove = this.m_mouseMove.bind(this);
-  this.m_mouseUp = this.m_mouseUp.bind(this);
-}
-
 /**
  * Adds eventlistener to close button and drag and drop handler.
  * 
- * @private
+ * @protected
  * @returns {undefined}
  */
 CustomWindow.prototype.m_addListeners = function () {
@@ -168,28 +185,30 @@ CustomWindow.prototype.m_addListeners = function () {
 }
 
 /**
- * ...
+ * Initiates dragging an brings window to front.
+ *  
  * @private
- * @param {Event} event - ...
+ * @param {Event} event - The event from the eventListener.
  * @returns {undefined}
  */
 CustomWindow.prototype.m_dragStart = function (event) {
   if (event.target.className === "close") return;
 
-  CustomWindow.zIndex++;
+  CustomWindow.m_zIndex++;
 
   this.m_dragDropValues.offsetX = event.offsetX;
   this.m_dragDropValues.offsetY = event.offsetY;
 
   this.m_element.style.opacity = this.m_dragDropValues.transparentValue;
-  this.m_element.style.zIndex = CustomWindow.zIndex;
+  this.m_element.style.zIndex = CustomWindow.m_zIndex;
 
   document.addEventListener("mousemove", this.m_mouseMove);
   document.addEventListener("mouseup", this.m_mouseUp);
 }
 
 /**
- * ...
+ * Moves window based on cursor position.
+ * 
  * @private
  * @param {Event} event - ...
  * @returns {undefined}
@@ -203,9 +222,10 @@ CustomWindow.prototype.m_mouseMove = function (event) {
 }
 
 /**
- * ...
+ * Resets window opacity and removes eventlisteners. 
+ * 
  * @private
- * @param {Event} event - ...
+ * @param {Event} event - The event from the eventListener.
  * @returns {undefined}
  */
 CustomWindow.prototype.m_mouseUp = function (event) {

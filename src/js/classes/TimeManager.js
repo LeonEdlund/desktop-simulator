@@ -33,7 +33,13 @@ function TimeManager() {
    */
   this.m_subscribers = [];
 
-  this.m_interval;
+  /**
+   * The setInterval id. 
+   * 
+   * @private
+   * @type {number}
+   */
+  this.m_intervalId;
 
   //--------------------------------------------------------------------------
   // Constructor call
@@ -48,7 +54,8 @@ function TimeManager() {
 /**
 * Retrieves the singleton instance of TimeManager.
 * If no instance exists, it creates one.
-* 
+*
+* @static
 * @public
 * @returns {TimeManager}
 */
@@ -72,7 +79,7 @@ TimeManager.getInstance = function () {
 TimeManager.prototype.subscribe = function (callback) {
   this.m_subscribers.push(callback);
   if (this.m_subscribers.length === 1) {
-    this.m_interval = setInterval(this.m_updateTime.bind(this), 1000);
+    this.m_intervalId = setInterval(this.m_updateTime.bind(this), 1000);
   }
   callback();
 }
@@ -137,6 +144,5 @@ TimeManager.prototype.m_renderSubscribers = function () {
  * @returns {undefined}
  */
 TimeManager.prototype.m_dispose = function () {
-  clearInterval(this.m_interval);
+  clearInterval(this.m_intervalId);
 }
-

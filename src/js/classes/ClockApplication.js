@@ -71,7 +71,6 @@ ClockApplication.prototype.constructor = ClockApplication;
  */
 ClockApplication.prototype.renderClock = function () {
   var time = this.m_timeManager.timeAsStrings;
-
   this.m_updateDigits(this.m_digits.hour, time.hour);
   this.m_updateDigits(this.m_digits.minutes, time.minutes);
   this.m_updateDigits(this.m_digits.seconds, time.seconds);
@@ -94,25 +93,31 @@ ClockApplication.prototype.dispose = function () {
 /**
  * Secondary constructor method.
  * 
- * @private
+ * @override
+ * @protected
  * @returns {undefined}
  */
 ClockApplication.prototype.m_construct = function () {
-  this.m_createWindow("clock-window-wrapper", "clock-menubar-wrapper");
-
-  var clockContainer = document.createElement("div");
-  clockContainer.className = "clock-content-wrapper";
-
-  clockContainer.appendChild(this.m_digits.hour);
-  clockContainer.appendChild(this.m_digits.minutes);
-  clockContainer.appendChild(this.m_digits.seconds);
-
-  // parent call
-  this.m_addElement(clockContainer);
+  CustomWindow.prototype.m_construct.call(this);
+  CustomWindow.prototype.m_createWindow.call(this, "clock-window-wrapper", "clock-menubar-wrapper");
+  CustomWindow.prototype.m_addElement.call(this, this.m_createClock());
 
   // Subscribe to timeManager
   this.boundCallback = this.renderClock.bind(this);
   this.m_timeManager.subscribe(this.boundCallback);
+}
+
+/**
+ * Create clock.
+ * 
+ * @private
+ * @returns {Element}
+ */
+ClockApplication.prototype.m_createClock = function () {
+  var clockContainer = document.createElement("div");
+  clockContainer.className = "clock-content-wrapper";
+  clockContainer.append(this.m_digits.hour, this.m_digits.minutes, this.m_digits.seconds);
+  return clockContainer;
 }
 
 /**
@@ -132,8 +137,7 @@ ClockApplication.prototype.m_createDigits = function (unitClass) {
   digitOne.className = "clock-digit-zero";
   digitTwo.className = "clock-digit-zero";
 
-  ul.appendChild(digitOne);
-  ul.appendChild(digitTwo);
+  ul.append(digitOne, digitTwo);
 
   return ul;
 }
@@ -149,6 +153,7 @@ ClockApplication.prototype.m_createDigits = function (unitClass) {
  * @returns {undefined}
  */
 ClockApplication.prototype.m_updateDigits = function (element, time) {
+  var digits = element.querySelectorAll("li");
   var classNames = [
     "clock-digit-zero",
     "clock-digit-one",
@@ -162,7 +167,6 @@ ClockApplication.prototype.m_updateDigits = function (element, time) {
     "clock-digit-nine"
   ];
 
-  var digits = element.querySelectorAll("li");
   digits[0].className = classNames[parseInt(time[0], 10)];
   digits[1].className = classNames[parseInt(time[1], 10)];
 }
