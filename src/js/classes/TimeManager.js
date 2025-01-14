@@ -9,17 +9,6 @@ function TimeManager() {
   if (TimeManager.m_instance) {
     return TimeManager.m_instance;
   }
-  //--------------------------------------------------------------------------
-  // Public properties
-  //--------------------------------------------------------------------------
-
-  /**
-   * Object with current time as strings.
-   * 
-   * @public
-   * @type {Object}
-   */
-  this.timeAsStrings;
 
   //--------------------------------------------------------------------------
   // Private properties
@@ -81,7 +70,7 @@ TimeManager.prototype.subscribe = function (callback) {
   if (this.m_subscribers.length === 1) {
     this.m_intervalId = setInterval(this.m_updateTime.bind(this), 1000);
   }
-  callback();
+  this.m_updateTime();
 }
 
 TimeManager.prototype.unSubscribe = function (callback) {
@@ -117,12 +106,8 @@ TimeManager.prototype.m_construct = function () {
  */
 TimeManager.prototype.m_updateTime = function () {
   var now = new Date();
-  this.timeAsStrings = {
-    hour: now.getHours().toString().padStart(2, "0"),
-    minutes: now.getMinutes().toString().padStart(2, "0"),
-    seconds: now.getSeconds().toString().padStart(2, "0"),
-  }
-  this.m_renderSubscribers();
+  var timeAsString = now.toTimeString().split(" ")[0].replaceAll(":", "");
+  this.m_renderSubscribers(timeAsString);
 }
 
 /**
@@ -131,9 +116,9 @@ TimeManager.prototype.m_updateTime = function () {
  * @private
  * @returns {undefined}
  */
-TimeManager.prototype.m_renderSubscribers = function () {
+TimeManager.prototype.m_renderSubscribers = function (timeAsString) {
   this.m_subscribers.forEach(function (callback) {
-    callback();
+    callback(timeAsString);
   });
 }
 
