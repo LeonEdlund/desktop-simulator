@@ -1,5 +1,5 @@
 /**
- * Creates a new instance of the application.
+ * Creates a new instance of the Main class.
  * 
  * @class
  * @classdesc - Reppresents the whole application. 
