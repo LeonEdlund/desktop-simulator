@@ -1,7 +1,10 @@
 /**
+ * Creates a new instance of the CustomWindow class.
+ * 
  * @class
+ * @classdesc - Abstract class representing a the base of a window.
  * @abstract
- * @classdesc - Abstract class representing a custom window.
+ * 
  * @constructor
  */
 function CustomWindow() {
@@ -94,8 +97,8 @@ CustomWindow.prototype.closeWindow = function () {
   this.m_element.remove();
 
   // Run dispose method in child classes if the exist.
-  if (this.dispose) {
-    this.dispose();
+  if (this.m_dispose) {
+    this.m_dispose();
   }
 
   // set all properties to null.
@@ -132,6 +135,15 @@ CustomWindow.prototype.m_construct = function () {
 }
 
 /**
+ * Abstract dispose method that needs to be implemented in child classes.
+ * 
+ * @protected
+ * @abstract
+ * @returns {undefined}
+ */
+CustomWindow.prototype.m_dispose = function () { }
+
+/**
  * creates the base structure of the dice window.
  * 
  * @protected
@@ -154,8 +166,6 @@ CustomWindow.prototype.m_createWindow = function (windowClass, menuClass) {
   this.m_element = windowWrapper;
   this.m_menubar = menuWrapper;
   this.m_closeBtn = close;
-
-  this.m_addListeners();
 }
 
 /**
@@ -169,10 +179,6 @@ CustomWindow.prototype.m_addElement = function (element) {
   this.m_element.appendChild(element);
 }
 
-//--------------------------------------------------------------------------
-// Private prototype methods
-//--------------------------------------------------------------------------
-
 /**
  * Adds eventlistener to close button and drag and drop handler.
  * 
@@ -183,6 +189,11 @@ CustomWindow.prototype.m_addListeners = function () {
   this.m_closeBtn.addEventListener("click", this.closeWindow);
   this.m_menubar.addEventListener("mousedown", this.m_dragStart);
 }
+
+//--------------------------------------------------------------------------
+// Private prototype methods
+//--------------------------------------------------------------------------
+
 
 /**
  * Initiates dragging an brings window to front.

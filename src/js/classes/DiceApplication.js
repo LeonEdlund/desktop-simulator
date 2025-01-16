@@ -1,9 +1,9 @@
 /**
- * Creates a new instance of a dice application.
+ * Creates a new instance of the DiceApplication class.
  * 
  * @class
  * @extends {CustomWindow}
- * @classdesc
+ * @classdesc - Represents a clock application.
  * 
  * @constructor
  * @param {number} maxDice - The max number of dice for the application.
@@ -95,18 +95,40 @@ DiceApplication.prototype.constructor = DiceApplication;
  */
 DiceApplication.prototype.m_audio = new Audio("src/wav/add.wav");
 
+//--------------------------------------------------------------------------
+// Protected prototype methods
+//--------------------------------------------------------------------------
 
-//--------------------------------------------------------------------------
-// Public prototype methods
-//--------------------------------------------------------------------------
+/**
+ * Secondary constructor method.
+ * 
+ * @override
+ * @protected
+ * @returns {undefined}
+ */
+DiceApplication.prototype.m_construct = function () {
+  CustomWindow.prototype.m_construct.call(this);
+
+  // bind eventlistener functions to this
+  this.m_insertDice = this.m_insertDice.bind(this);
+  this.m_removeLastDice = this.m_removeLastDice.bind(this);
+  this.m_rollAllDice = this.m_rollAllDice.bind(this);
+  this.m_reRollSingleDice = this.m_reRollSingleDice.bind(this);
+
+  CustomWindow.prototype.m_createWindow.call(this, "dice-window-wrapper", "dice-menubar-wrapper");
+  CustomWindow.prototype.m_addElement.call(this, this.m_createToolbar());
+  CustomWindow.prototype.m_addElement.call(this, this.m_createDiceContainer());
+
+  this.m_addListeners();
+}
 
 /**
  * Disposes of resources.
  * 
- * @public
+ * @protected
  * @return {undefined}
  */
-DiceApplication.prototype.dispose = function () {
+DiceApplication.prototype.m_dispose = function () {
   this.m_toolbarBtns.add.removeEventListener("click", this.m_insertDice);
   this.m_toolbarBtns.remove.removeEventListener("click", this.m_removeLastDice);
   this.m_toolbarBtns.roll.removeEventListener("click", this.m_rollAllDice);
@@ -125,27 +147,6 @@ DiceApplication.prototype.dispose = function () {
 // Private prototype methods
 //--------------------------------------------------------------------------
 
-/**
- * Secondary constructor method.
- * 
- * @protected
- * @returns {undefined}
- */
-DiceApplication.prototype.m_construct = function () {
-  CustomWindow.prototype.m_construct.call(this);
-
-  // bind eventlistener functions to this
-  this.m_insertDice = this.m_insertDice.bind(this);
-  this.m_removeLastDice = this.m_removeLastDice.bind(this);
-  this.m_rollAllDice = this.m_rollAllDice.bind(this);
-  this.m_reRollSingleDice = this.m_reRollSingleDice.bind(this);
-
-  CustomWindow.prototype.m_createWindow.call(this, "dice-window-wrapper", "dice-menubar-wrapper");
-  CustomWindow.prototype.m_addElement.call(this, this.m_createToolbar());
-  CustomWindow.prototype.m_addElement.call(this, this.m_createDiceContainer());
-
-  this.m_addEvents();
-}
 
 /**
  * Creates the toolbar for the dice application.
@@ -197,10 +198,12 @@ DiceApplication.prototype.m_createDiceContainer = function () {
 /**
  * Adds eventlistener. 
  * 
- * @private
+ * @override
+ * @protected
  * @returns {undefined}
  */
-DiceApplication.prototype.m_addEvents = function () {
+DiceApplication.prototype.m_addListeners = function () {
+  CustomWindow.prototype.m_addListeners.call(this);
   this.m_toolbarBtns.add.addEventListener("click", this.m_insertDice);
   this.m_toolbarBtns.remove.addEventListener("click", this.m_removeLastDice);
   this.m_toolbarBtns.roll.addEventListener("click", this.m_rollAllDice);

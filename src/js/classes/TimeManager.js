@@ -3,6 +3,7 @@
  * 
  * @class
  * @classdesc - A singleton class that keps track and updates subscribers based on the current time.
+ * 
  * @constructor
  */
 function TimeManager() {
@@ -73,6 +74,12 @@ TimeManager.prototype.subscribe = function (callback) {
   this.m_updateTime();
 }
 
+/**
+ * Remove callback function from subscribers array.
+ * 
+ * @param {Function} callback - The callback function to remove from subscribers
+ * @returns {undefined}
+ */
 TimeManager.prototype.unSubscribe = function (callback) {
   var index = this.m_subscribers.indexOf(callback);
   if (index !== -1) {

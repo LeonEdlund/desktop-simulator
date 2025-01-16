@@ -1,9 +1,9 @@
 /**
- * Creates a new instance of a dice application.
+ * Creates a new instance of the ClockApplication class.
  * 
  * @class
- * @extends {CustomWindow}
  * @classdesc - Represents a clock application.
+ * @extends CustomWindow
  * 
  * @constructor
  * @param {TimeManager} timeManager - A singleton object handling the global time and rendering of clocks.
@@ -30,6 +30,14 @@ function ClockApplication(timeManager) {
    */
   this.m_timeManager = timeManager;
 
+  /**
+   * Nobelist of all digits.
+   * 
+   * @private
+   * @type {NodeList}
+   */
+  this.m_digits;
+
   //--------------------------------------------------------------------------
   // Constructor call
   //--------------------------------------------------------------------------
@@ -48,16 +56,16 @@ ClockApplication.prototype = Object.create(CustomWindow.prototype);
 ClockApplication.prototype.constructor = ClockApplication;
 
 //--------------------------------------------------------------------------
-// Public prototype methods
+// Protected prototype methods
 //--------------------------------------------------------------------------
 
 /**
  * Dispose resources by unsubscribing from TimeManager.
  * 
- * @public
+ * @protected
  * @returns {undefined}
  */
-ClockApplication.prototype.dispose = function () {
+ClockApplication.prototype.m_dispose = function () {
   this.m_timeManager.unSubscribe(this.boundCallback);
 }
 
@@ -76,6 +84,8 @@ ClockApplication.prototype.m_construct = function () {
   CustomWindow.prototype.m_construct.call(this);
   CustomWindow.prototype.m_createWindow.call(this, "clock-window-wrapper", "clock-menubar-wrapper");
   CustomWindow.prototype.m_addElement.call(this, this.m_createClock());
+  CustomWindow.prototype.m_addListeners.call(this);
+  this.m_digits = this.m_element.querySelectorAll("li");
 
   // Subscribe to timeManager
   this.boundCallback = this.m_updateDigits.bind(this);
@@ -90,8 +100,15 @@ ClockApplication.prototype.m_construct = function () {
  */
 ClockApplication.prototype.m_createClock = function () {
   var clockContainer = document.createElement("div");
+  var hours = this.m_createDigits("hour");
+  var minutes = this.m_createDigits("minute");
+  var seconds = this.m_createDigits("second");
   clockContainer.className = "clock-content-wrapper";
-  clockContainer.append(this.m_createDigits("hour"), this.m_createDigits("minute"), this.m_createDigits("second"));
+
+  if (hours && minutes && seconds) {
+    clockContainer.append(hours, minutes, seconds);
+  };
+
   return clockContainer;
 }
 
@@ -121,11 +138,10 @@ ClockApplication.prototype.m_createDigits = function (unitClass) {
  * Updates the individual digits.
  * 
  * @private
- * @param {string} time - The time based on the unit as a string.
+ * @param {string} time - The time.
  * @returns {undefined}
  */
 ClockApplication.prototype.m_updateDigits = function (time) {
-  var digits = this.m_element.querySelectorAll("li");
   var classNames = [
     "clock-digit-zero",
     "clock-digit-one",
@@ -140,6 +156,6 @@ ClockApplication.prototype.m_updateDigits = function (time) {
   ];
 
   for (var i = 0; i < time.length; i++) {
-    digits[i].className = classNames[parseInt(time[i], 10)];
+    this.m_digits[i].className = classNames[parseInt(time[i], 10)];
   }
 }

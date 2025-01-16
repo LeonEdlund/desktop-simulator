@@ -1,5 +1,5 @@
 /**
- * 
+ * Creates a new instance of the ScoreCounter class.
  * 
  * @class
  * @classdesc - Represents a score counter.
@@ -113,10 +113,10 @@ ScoreCounter.prototype.dispose = function () {
  * @return {undefined}
  */
 ScoreCounter.prototype.m_construct = function () {
+  var self = this;
   this.m_element.className = "dice-toolbar-counter-wrapper";
 
-  // append numbers to counter ul-element.
   this.m_numbers.forEach(function (number) {
-    this.m_element.appendChild(number);
-  }.bind(this));
+    self.m_element.appendChild(number);
+  });
 }

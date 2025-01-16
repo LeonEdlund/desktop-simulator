@@ -1,8 +1,9 @@
 /**
- * Creates a new instance of a dice.
+ * Creates a new instance of the Dice class.
  * 
  * @class
  * @classdesc - Represents a dice.
+ * 
  * @constructor
  */
 function Dice() {

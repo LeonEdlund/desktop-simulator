@@ -7,6 +7,7 @@
  * @constructor
  */
 function Main() {
+
   //--------------------------------------------------------------------------
   // Private properties
   //--------------------------------------------------------------------------
@@ -43,6 +44,7 @@ function Main() {
 /**
  * Static array of all open windows.
  * 
+ * @static
  * @public
  * @type {Array}
  */
