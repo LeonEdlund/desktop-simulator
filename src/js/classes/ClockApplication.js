@@ -23,7 +23,7 @@ function ClockApplication(timeManager) {
   //--------------------------------------------------------------------------
 
   /**
-   * A singleton object handling the global time and rendering of clocks.
+   * A singleton instance handling the global time and rendering of clocks.
    * 
    * @private
    * @type {TimeManager}
@@ -31,7 +31,7 @@ function ClockApplication(timeManager) {
   this.m_timeManager = timeManager;
 
   /**
-   * Nobelist of all digits.
+   * Array of all digits.
    * 
    * @private
    * @type {Array}
@@ -76,7 +76,7 @@ ClockApplication.prototype.m_construct = function () {
 }
 
 /**
- * Create clock.
+ * Creates a window and specific elements for the clock.
  * 
  * @override
  * @protected

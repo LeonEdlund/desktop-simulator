@@ -2,7 +2,7 @@
  * Creates a new instance of the CustomWindow class.
  * 
  * @class
- * @classdesc - Abstract class representing a the base of a window.
+ * @classdesc - Abstract class representing window.
  * @abstract
  * 
  * @constructor
@@ -96,7 +96,7 @@ CustomWindow.prototype.closeWindow = function () {
   this.m_menubar.removeEventListener("mousedown", this.m_dragStart);
   this.m_element.remove();
 
-  // Run dispose method in child classes if the exist.
+  // Run dispose method in child classes if it exist.
   if (this.m_dispose) {
     this.m_dispose();
   }
@@ -108,7 +108,7 @@ CustomWindow.prototype.closeWindow = function () {
     }
   }
 
-  // Remove window from array if alla windows
+  // Remove window from array of all windows
   if (Main.allWindows) {
     var i = Main.allWindows.indexOf(this);
     if (i !== -1) {
@@ -200,7 +200,7 @@ CustomWindow.prototype.m_dragStart = function (event) {
  * Moves window based on cursor position.
  * 
  * @private
- * @param {Event} event - ...
+ * @param {Event} event - The event from the eventListener.
  * @returns {undefined}
  */
 CustomWindow.prototype.m_mouseMove = function (event) {

@@ -157,7 +157,7 @@ DiceApplication.prototype.m_createWindow = function () {
 }
 
 /**
- * Adds eventlistener. 
+ * Adds all necessary eventlistener. 
  * 
  * @override
  * @protected
