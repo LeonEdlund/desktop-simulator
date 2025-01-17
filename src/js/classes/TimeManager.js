@@ -30,15 +30,6 @@ function TimeManager() {
    * @type {number}
    */
   this.m_intervalId;
-
-  //--------------------------------------------------------------------------
-  // Constructor call
-  //--------------------------------------------------------------------------
-
-  /**
-   * Invokes secondary constructor call.
-   */
-  this.m_construct();
 }
 
 /**
@@ -94,16 +85,6 @@ TimeManager.prototype.unSubscribe = function (callback) {
 //--------------------------------------------------------------------------
 // Private methods
 //--------------------------------------------------------------------------
-
-/**
- * Secondary constructor.
- * 
- * @private
- * @returns {undefined}
- */
-TimeManager.prototype.m_construct = function () {
-  this.m_updateTime();
-}
 
 /**
  * Updates the time as string.

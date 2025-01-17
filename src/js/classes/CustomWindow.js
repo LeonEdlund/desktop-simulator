@@ -135,15 +135,6 @@ CustomWindow.prototype.m_construct = function () {
 }
 
 /**
- * Abstract dispose method that needs to be implemented in child classes.
- * 
- * @protected
- * @abstract
- * @returns {undefined}
- */
-CustomWindow.prototype.m_dispose = function () { }
-
-/**
  * creates the base structure of the dice window.
  * 
  * @protected
@@ -169,17 +160,6 @@ CustomWindow.prototype.m_createWindow = function (windowClass, menuClass) {
 }
 
 /**
- * Adds HTML elements to window.
- * 
- * @protected
- * @param {Element} element - The element that should be added.
- * @returns {undefined}
- */
-CustomWindow.prototype.m_addElement = function (element) {
-  this.m_element.appendChild(element);
-}
-
-/**
  * Adds eventlistener to close button and drag and drop handler.
  * 
  * @protected
@@ -193,7 +173,6 @@ CustomWindow.prototype.m_addListeners = function () {
 //--------------------------------------------------------------------------
 // Private prototype methods
 //--------------------------------------------------------------------------
-
 
 /**
  * Initiates dragging an brings window to front.
@@ -245,3 +224,16 @@ CustomWindow.prototype.m_mouseUp = function (event) {
   document.removeEventListener("mousemove", this.m_mouseMove);
   document.removeEventListener("mouseup", this.m_mouseUp);
 }
+
+//--------------------------------------------------------------------------
+// Abstract methods
+//--------------------------------------------------------------------------
+
+/**
+ * Abstract dispose method that needs to be implemented in child classes.
+ * 
+ * @protected
+ * @abstract
+ * @returns {undefined}
+ */
+CustomWindow.prototype.m_dispose = function () { }

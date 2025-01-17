@@ -94,9 +94,9 @@ Main.prototype.m_openClockWindow = function () {
   clockWindow.appendTo(this.m_desktop);
 }
 
-/** 
- * Bootstrap
- */
+//--------------------------------------------------------------------------
+// Bootstrap
+//--------------------------------------------------------------------------
 window.addEventListener("load", function () {
   var app = new Main();
   app.start();

@@ -34,7 +34,7 @@ function ClockApplication(timeManager) {
    * Nobelist of all digits.
    * 
    * @private
-   * @type {NodeList}
+   * @type {Array}
    */
   this.m_digits;
 
@@ -60,6 +60,47 @@ ClockApplication.prototype.constructor = ClockApplication;
 //--------------------------------------------------------------------------
 
 /**
+ * Secondary constructor method.
+ * 
+ * @override
+ * @protected
+ * @returns {undefined}
+ */
+ClockApplication.prototype.m_construct = function () {
+  CustomWindow.prototype.m_construct.call(this);
+  this.m_createWindow();
+  this.m_digits = Array.from(this.m_element.querySelectorAll("li"));
+
+  this.boundCallback = this.m_updateDigits.bind(this);
+  this.m_timeManager.subscribe(this.boundCallback);
+}
+
+/**
+ * Create clock.
+ * 
+ * @override
+ * @protected
+ * @returns {undefined}
+ */
+ClockApplication.prototype.m_createWindow = function () {
+  CustomWindow.prototype.m_createWindow.call(this, "clock-window-wrapper", "clock-menubar-wrapper");
+
+  var clockContainer = document.createElement("div");
+  var hours = this.m_createDigits("hour");
+  var minutes = this.m_createDigits("minute");
+  var seconds = this.m_createDigits("second");
+  clockContainer.className = "clock-content-wrapper";
+
+
+  if (hours && minutes && seconds) {
+    clockContainer.append(hours, minutes, seconds);
+  };
+
+  this.m_element.appendChild(clockContainer);
+  CustomWindow.prototype.m_addListeners.call(this);
+}
+
+/**
  * Dispose resources by unsubscribing from TimeManager.
  * 
  * @protected
@@ -74,49 +115,9 @@ ClockApplication.prototype.m_dispose = function () {
 //--------------------------------------------------------------------------
 
 /**
- * Secondary constructor method.
- * 
- * @override
- * @protected
- * @returns {undefined}
- */
-ClockApplication.prototype.m_construct = function () {
-  CustomWindow.prototype.m_construct.call(this);
-  CustomWindow.prototype.m_createWindow.call(this, "clock-window-wrapper", "clock-menubar-wrapper");
-  CustomWindow.prototype.m_addElement.call(this, this.m_createClock());
-  CustomWindow.prototype.m_addListeners.call(this);
-  this.m_digits = this.m_element.querySelectorAll("li");
-
-  // Subscribe to timeManager
-  this.boundCallback = this.m_updateDigits.bind(this);
-  this.m_timeManager.subscribe(this.boundCallback);
-}
-
-/**
- * Create clock.
- * 
- * @private
- * @returns {Element}
- */
-ClockApplication.prototype.m_createClock = function () {
-  var clockContainer = document.createElement("div");
-  var hours = this.m_createDigits("hour");
-  var minutes = this.m_createDigits("minute");
-  var seconds = this.m_createDigits("second");
-  clockContainer.className = "clock-content-wrapper";
-
-  if (hours && minutes && seconds) {
-    clockContainer.append(hours, minutes, seconds);
-  };
-
-  return clockContainer;
-}
-
-/**
  * Creates a ul Element with two digits as li elements.
  * 
  * @private
- * 
  * @param {string} unitClass - The css class for the different units of time.
  * @returns {Element}
  */
